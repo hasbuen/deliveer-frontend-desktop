@@ -1,20 +1,22 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
+import { useAutentica } from "./hooks/useAutentica"; // Hook de autenticação
 import Navbar from './Navbar';
 import SidebarMenu from './SidebarMenu';
 import Formulario from './Formulario';
 import { UserGroupIcon, UserPlusIcon, PencilSquareIcon, UserMinusIcon, EyeIcon } from '@heroicons/react/24/outline';
 
-interface User {
-    name: string;
-    role: string;
-    imageUrl: string;
+interface Usuario {
+    nome: string;
+    telefone: string;
+    avatar: string;
 }
 
 const Usuarios: React.FC = () => {
     const [login, setLogin] = useState<string>("");
     const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
-    const [users, setUsers] = useState<User[]>([]);
+    const { loading, criaUsuario, getUsuarios } = useAutentica();
+    const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -25,14 +27,19 @@ const Usuarios: React.FC = () => {
             setLogin(storedLogin);
         }
 
-        const fetchUsers = async () => {
-            const response = await fetch('/api/users');
-            const data = await response.json();
-            setUsers(data);
-        };
+        // Chama o método getUsuarios e mapeia os dados para o estado de usuarios
+        getUsuarios().then((usuarios: any[]) => {
+            const mapeiaUsuarios = usuarios.map((usuario: any) => ({
+                nome: usuario.nome, 
+                telefone: usuario.telefone,
+                avatar: usuario.avatar 
+            }));
+            setUsuarios(mapeiaUsuarios);
+        }).catch(error => {
+            console.error("Erro ao carregar os usuários", error);
+        });
 
-        fetchUsers();
-    }, [navigate]);
+    }, [navigate, getUsuarios]);
 
     const logout = () => {
         localStorage.removeItem('login');
@@ -47,9 +54,10 @@ const Usuarios: React.FC = () => {
         { name: 'Monitorar', href: '/usuarios/monitorar', icon: EyeIcon },
     ];
 
-    const handleSubmitForm = (formData: { [key: string]: any }) => {
-        console.log('Dados enviados:', formData);
-        navigate('/usuarios'); // Redirecionar para a página de usuários após o envio
+    const novoUsuario = (formData: { [key: string]: any }) => {
+        criaUsuario(formData);
+        {loading && <p>Carregando...</p>}
+        // navigate('/usuarios'); 
     };
 
     const fields = [
@@ -61,6 +69,8 @@ const Usuarios: React.FC = () => {
         ] },
         { label: 'Login', name: 'login', type: 'text' },
         { label: 'Nome Completo', name: 'nomeCompleto', type: 'text' },
+        { label: 'Email', name: 'email', type: 'email' },
+        { label: 'Telefone', name: 'telefone', type: 'phone' },
         { label: 'Senha', name: 'senha', type: 'password' },
         { label: 'Confirmar senha', name: 'confirmarSenha', type: 'password' },
         { label: 'Aniversário', name: 'aniversario', type: 'date' },
@@ -90,13 +100,13 @@ const Usuarios: React.FC = () => {
                                         </p>
                                     </div>
                                     <ul role="list" className="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
-                                        {users.map((user) => (
-                                            <li key={user.name}>
+                                        {usuarios.map((usuario) => (
+                                            <li key={usuario.nome}>
                                                 <div className="flex items-center gap-x-6">
-                                                    <img alt="" src={user.imageUrl} className="h-16 w-16 rounded-full" />
+                                                    <img alt="" src={`/avatars/${usuario.avatar}`}  className="h-16 w-16 rounded-full" />
                                                     <div>
-                                                        <h3 className="text-base font-semibold leading-7 tracking-tight text-gray-900">{user.name}</h3>
-                                                        <p className="text-sm font-semibold leading-6 text-indigo-600">{user.role}</p>
+                                                        <h3 className="text-base font-semibold leading-7 tracking-tight text-gray-900">{usuario.nome}</h3>
+                                                        <p className="text-sm font-semibold leading-6 text-indigo-600">{usuario.telefone}</p>
                                                     </div>
                                                 </div>
                                             </li>
@@ -106,8 +116,8 @@ const Usuarios: React.FC = () => {
                             </div>
                         } />
                         <Route path="novo" element={
-                            <div className="max-w-2xl rounded-md shadow-sm  mx-auto">
-                                <Formulario name={"Novo usuário"} fields={fields} onSubmit={handleSubmitForm} />
+                            <div className="max-w-2xl rounded-md shadow-sm mx-auto">
+                                <Formulario name={"Novo usuário"} fields={fields} onSubmit={novoUsuario} />
                             </div>
                         } />
                         {/* Outras rotas podem ser adicionadas aqui */}
