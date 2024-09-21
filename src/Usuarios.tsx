@@ -53,13 +53,18 @@ const Usuarios: React.FC = () => {
     };
 
     const fields = [
-        { label: 'Filial', name: 'filial', type: 'text' },
+        { label: 'Superior', name: 'isSuperior', type: 'checkbox' },
+        { label: 'Filial', name: 'filial', type: 'select', options: [
+            { value: 'filial1', label: 'Filial 1' },
+            { value: 'filial2', label: 'Filial 2' },
+            { value: 'filial3', label: 'Filial 3' },
+        ] },
         { label: 'Login', name: 'login', type: 'text' },
         { label: 'Nome Completo', name: 'nomeCompleto', type: 'text' },
         { label: 'Senha', name: 'senha', type: 'password' },
+        { label: 'Confirmar senha', name: 'confirmarSenha', type: 'password' },
         { label: 'Aniversário', name: 'aniversario', type: 'date' },
-        { label: 'Avatar', name: 'avatar', type: 'file' },
-        { label: 'Superior', name: 'isSuperior', type: 'checkbox' },
+        { label: 'Avatar', name: 'avatar', type: 'file' }
     ];
 
     return (
@@ -101,8 +106,8 @@ const Usuarios: React.FC = () => {
                             </div>
                         } />
                         <Route path="novo" element={
-                            <div className="max-w-4xl mx-auto">
-                                <Formulario fields={fields} onSubmit={handleSubmitForm} />
+                            <div className="max-w-2xl rounded-md shadow-sm  mx-auto">
+                                <Formulario name={"Novo usuário"} fields={fields} onSubmit={handleSubmitForm} />
                             </div>
                         } />
                         {/* Outras rotas podem ser adicionadas aqui */}

@@ -4,15 +4,17 @@ interface Field {
     label: string;
     name: string;
     type: string; 
+    options?: { value: string; label: string }[]; // Adicionado para opções do combobox
 }
 
 interface FormularioProps {
+    name: string;
     fields: Field[];
     onSubmit: (formData: { [key: string]: any }) => void;
     initialData?: { [key: string]: any };
 }
 
-const Formulario: React.FC<FormularioProps> = ({ fields, onSubmit, initialData = {} }) => {
+const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initialData = {} }) => {
     const [formData, setFormData] = useState<{ [key: string]: any }>(initialData);
     const [avatars, setAvatars] = useState<string[]>([]);
 
@@ -22,10 +24,13 @@ const Formulario: React.FC<FormularioProps> = ({ fields, onSubmit, initialData =
     }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
+        const { name, type, value } = e.target;
+        const isCheckbox = type === 'checkbox';
+        const checked = isCheckbox ? (e.target as HTMLInputElement).checked : undefined;
+
         setFormData(prevState => ({
             ...prevState,
-            [name]: value
+            [name]: isCheckbox ? checked : value
         }));
     };
 
@@ -36,10 +41,38 @@ const Formulario: React.FC<FormularioProps> = ({ fields, onSubmit, initialData =
 
     return (
         <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <h2 className="col-span-1 sm:col-span-2 text-2xl font-bold text-rose-600 mb-4">{name}</h2>
             {fields.map((field) => (
                 <div key={field.name} className="flex flex-col mb-4">
-                    <label htmlFor={field.name} className="block text-sm font-medium text-rose-600">{field.label}</label>
-                    {field.name === 'avatar' ? (
+                    <label htmlFor={field.name} className="block text-sm font-medium text-rose-600">
+                        {field.type !== 'checkbox' && field.label}
+                    </label>
+                    {field.type === 'checkbox' ? (
+                        <div className="flex items-center mt-1">
+                            <input
+                                type="checkbox"
+                                name={field.name}
+                                checked={formData[field.name] || false}
+                                onChange={handleChange}
+                                className="h-4 w-4 text-rose-600 border-gray-300 rounded focus:ring-rose-500"
+                            />
+                            <span className="ml-2 text-gray-700">{field.label}</span>
+                        </div>
+                    ) : field.type === 'select' ? (
+                        <select
+                            name={field.name}
+                            value={formData[field.name] || ''}
+                            onChange={handleChange}
+                            className="mt-1 block w-full rounded-lg p-2 border-0 text-black shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-rose-600"
+                        >
+                            <option value="" disabled>Select an option</option>
+                            {field.options?.map(option => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
+                    ) : field.name === 'avatar' ? (
                         <div className="h-40 overflow-y-auto flex flex-wrap">
                             {avatars.map((avatar) => (
                                 <div key={avatar} className="flex flex-col items-center mb-2 mx-1">
