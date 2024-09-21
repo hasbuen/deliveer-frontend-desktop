@@ -49,19 +49,23 @@ const REDEFINE = gql`
 export function useAutentica() {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const autentica = async (login: string, senha: string) => {
+  const autentica = async (login: string, senha: string): Promise<boolean> => {
     setLoading(true);
     try {
       const variables = { login, senha };
       const data: AutenticaResposta = await client.request(AUTENTICA, variables);
       if (data) {
+        localStorage.setItem('login', data.autentica.login);
+        localStorage.setItem('token', data.autentica.token);
         toast.success(`${data.autentica.login}, bem vindo(a)!`);
-        return;
+        return true;
       } else {
         toast.error("verifique");
+        return false;
       }
     } catch (err: any) {
       toast.error(err.response?.errors?.[0]?.message);
+      return false;
     } finally {
       setLoading(false);
     }
@@ -73,6 +77,9 @@ export function useAutentica() {
       if (senha === confirmaSenha) {
         const variables = { login, senha, superior, senhaSuperior };
         const data: RedefineResposta = await client.request(REDEFINE, variables);
+
+        localStorage.setItem('login', data.redefine.login);
+        localStorage.setItem('token', data.redefine.token);
         toast.success(`Senha do usuário ${data.redefine.login} alterada com sucesso!`);
       } else {
         toast.error(`Confirme nova senha para usuário ${login}!`);

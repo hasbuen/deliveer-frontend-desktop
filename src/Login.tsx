@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom'; 
 import { useAutentica } from "./hooks/useAutentica.ts";
 
 function Login() {
+  const navigate = useNavigate();
   const [login, setLogin] = useState("");
   const [senha, setSenha] = useState("");
   const [superior, setSuperior] = useState("");
@@ -10,14 +12,17 @@ function Login() {
   const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar a visibilidade do modal
   const { loading, autentica, redefine } = useAutentica();
 
-  const acessar = (event: React.FormEvent<HTMLFormElement>) => {
+  const acessar = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    autentica(login, senha);
+    const sucesso = await autentica(login, senha);
+    if (sucesso) {
+      navigate('/dashboard');
+    }
   };
 
   const redefinirSenha = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    redefine(login, senha, confirmaSenha, superior, senhaSuperior,);
+    redefine(login, senha, confirmaSenha, superior, senhaSuperior);
   };
 
   const abrirRedefinirSenhaModal = () => {
@@ -42,12 +47,12 @@ function Login() {
         <form onSubmit={acessar} className="space-y-6">
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="usuario" className="block text-lg font-medium leading-6 text-fuchsia-600">
+              <label htmlFor="usuario" className="block text-lg font-medium leading-6 text-rose-600">
                 Usuário
               </label>
             </div>
             <div className="mb-5">
-              <label className="block text-sm font-medium text-fuchsia-700 dark:text-white">Usuário</label>
+              <label className="block text-sm font-medium text-rose-600 dark:text-white">Usuário</label>
               <input
                 id="login"
                 name="login"
@@ -62,7 +67,7 @@ function Login() {
 
           <div>
             <div className="flex items-center justify-between">
-              <label htmlFor="senha" className="block text-lg font-medium leading-6 text-fuchsia-600">
+              <label htmlFor="senha" className="block text-lg font-medium leading-6 text-rose-600">
                 Senha
               </label>
               <div className="text-sm">
@@ -72,7 +77,7 @@ function Login() {
                     e.preventDefault();
                     abrirRedefinirSenhaModal();
                   }}
-                  className="font-semibold text-fuchsia-600 hover:text-fuchsia-800"
+                  className="font-semibold text-rose-600 hover:text-rose-800"
                 >
                   Esqueceu sua senha?
                 </a>
@@ -80,7 +85,7 @@ function Login() {
             </div>
 
             <div className="mb-5">
-              <label className="block text-sm font-medium text-fuchsia-700 dark:text-white">Sua senha</label>
+              <label className="block text-sm font-medium text-rose-600 dark:text-white">Sua senha</label>
               <input
                 id="senha"
                 name="senha"
@@ -89,7 +94,7 @@ function Login() {
                 onChange={(e) => setSenha(e.target.value)}
                 required
                 autoComplete="current-password"
-                className="block w-full rounded-lg p-2.5 border-0 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-fuchsia-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-lg p-2.5 border-0 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-rose-600 sm:text-sm sm:leading-6"
               />
             </div>
           </div>
@@ -97,7 +102,7 @@ function Login() {
           <div>
             <button
               type="submit"
-              className="flex w-full justify-center rounded-md bg-fuchsia-600 px-3 py-1.5 text-lg font-semibold leading-6 text-white shadow-sm hover:bg-fuchsia-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-600"
+              className="flex w-full justify-center rounded-md bg-rose-600 px-3 py-1.5 text-lg font-semibold leading-6 text-white shadow-sm hover:bg-fuchsia-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-fuchsia-600"
             >
               Acessar
             </button>
@@ -113,7 +118,7 @@ function Login() {
               <h2 className="text-xl font-semibold mb-4">Redefinir Senha</h2>
               <form onSubmit={redefinirSenha} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-fuchsia-700">Superior</label>
+                  <label className="block text-sm font-medium text-rose-600">Superior</label>
                   <input
                     id="superior"
                     name="superior"
@@ -124,7 +129,7 @@ function Login() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-fuchsia-700">Senha do Superior</label>
+                  <label className="block text-sm font-medium text-rose-600">Senha do Superior</label>
                   <input
                     id="senhaSuperior"
                     name="senhaSuperior"
@@ -135,7 +140,7 @@ function Login() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-fuchsia-700">Login</label>
+                  <label className="block text-sm font-medium text-rose-600">Login</label>
                   <input
                     id="login"
                     name="login"
@@ -146,7 +151,7 @@ function Login() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-fuchsia-700">Senha</label>
+                  <label className="block text-sm font-medium text-rose-600">Senha</label>
                   <input
                     id="senha"
                     name="senha"
@@ -157,7 +162,7 @@ function Login() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-fuchsia-700">Confirmar Senha</label>
+                  <label className="block text-sm font-medium text-rose-600">Confirmar Senha</label>
                   <input
                     id="confirmaSenha"
                     name="confirmaSenha"
@@ -177,7 +182,7 @@ function Login() {
                   </button>
                   <button
                     type="submit"
-                    className="rounded-md bg-fuchsia-600 px-4 py-2 text-sm font-semibold text-white hover:bg-fuchsia-800"
+                    className="rounded-md bg-rose-600 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-800"
                   >
                     Redefinir Senha
                   </button>
