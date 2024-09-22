@@ -9,6 +9,7 @@ interface Usuario {
   id: string;
   login: string;
   token: string;
+  avatar: string;
   superior: string;
   senhaSuperior: string;
   senha: string;
@@ -37,6 +38,7 @@ const AUTENTICA = gql`
       id
       login
       token
+      avatar
     }
   }
 `;
@@ -55,7 +57,7 @@ const REDEFINE = gql`
 `;
 
 const CRIA_USUARIO = gql`
-  mutation CriaUsuario(
+  mutation Cria(
     $login: String!,
     $senha: String!,
     $nome: String!,
@@ -80,17 +82,25 @@ const CRIA_USUARIO = gql`
       id
       login
       nome
+      avatar
     }
   }
 `;
 
 const GET_USUARIOS = gql`
-query GetUsuarios {
-  usuarios {
+query todos {
+  todos {
     id
+    login
+    senha
     nome
+    aniversario
+    token
+    email
     telefone
     avatar
+    superior
+    senhaSuperior 
   }
 }
 `;
@@ -104,6 +114,7 @@ export function useAutentica() {
       const variables = { login, senha };
       const data: AutenticaResposta = await client.request(AUTENTICA, variables);
       if (data) {
+        localStorage.setItem('avatar', data.autentica.avatar);
         localStorage.setItem('login', data.autentica.login);
         localStorage.setItem('token', data.autentica.token);
         toast.success(`${data.autentica.login}, bem vindo(a)!`);
@@ -140,11 +151,11 @@ export function useAutentica() {
     }
   };
 
-  const criaUsuario = async (formData: { [key: string]: any }) => {
+  const cria = async (formData: { [key: string]: any }) => {
     const {
       login,
       senha,
-      nomeCompleto,
+      nome,
       avatar,
       aniversario,
       email,
@@ -156,7 +167,7 @@ export function useAutentica() {
     const variables = {
       login,
       senha,
-      nome: nomeCompleto,
+      nome,
       avatar,
       aniversario,
       email,
@@ -178,10 +189,11 @@ export function useAutentica() {
   };
 
 
-  const getUsuarios = async (): Promise<Usuario[]> => {
+  const todos = async (): Promise<Usuario[]> => {
     setLoading(true);
     try {
       const data: GetUsuariosResposta = await client.request(GET_USUARIOS);
+
       return data.todos;
     } catch (err: any) {
       toast.error(err.response?.errors?.[0]?.message);
@@ -191,5 +203,5 @@ export function useAutentica() {
     }
   };
 
-  return { loading, autentica, redefine, criaUsuario, getUsuarios };
+  return { loading, autentica, redefine, cria, todos };
 }

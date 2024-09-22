@@ -13,22 +13,25 @@ interface Usuario {
 }
 
 const Usuarios: React.FC = () => {
+    const [avatar, setAvatar] = useState<string>("");
     const [login, setLogin] = useState<string>("");
     const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
-    const { loading, criaUsuario, getUsuarios } = useAutentica();
+    const { loading, cria, todos } = useAutentica();
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
+        const storedAvatar = localStorage.getItem('avatar');
         const storedLogin = localStorage.getItem('login');
         if (!storedLogin) {
             navigate('/');
         } else {
+            setAvatar(storedAvatar || ""); 
             setLogin(storedLogin);
         }
 
         // Chama o método getUsuarios e mapeia os dados para o estado de usuarios
-        getUsuarios().then((usuarios: any[]) => {
+        todos().then((usuarios: any[]) => {
             const mapeiaUsuarios = usuarios.map((usuario: any) => ({
                 nome: usuario.nome, 
                 telefone: usuario.telefone,
@@ -39,7 +42,7 @@ const Usuarios: React.FC = () => {
             console.error("Erro ao carregar os usuários", error);
         });
 
-    }, [navigate, getUsuarios]);
+    }, [navigate, todos]);
 
     const logout = () => {
         localStorage.removeItem('login');
@@ -55,7 +58,7 @@ const Usuarios: React.FC = () => {
     ];
 
     const novoUsuario = (formData: { [key: string]: any }) => {
-        criaUsuario(formData);
+        cria(formData);
         {loading && <p>Carregando...</p>}
         // navigate('/usuarios'); 
     };
@@ -79,7 +82,7 @@ const Usuarios: React.FC = () => {
 
     return (
         <div className="flex flex-col h-screen">
-            <Navbar login={login} logout={logout} />
+            <Navbar avatar={avatar} login={login} logout={logout} />
             <div className="flex flex-1">
                 <SidebarMenu
                     title="Usuários"

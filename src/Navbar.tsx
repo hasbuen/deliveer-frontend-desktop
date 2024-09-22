@@ -4,6 +4,7 @@ import { UserGroupIcon, XMarkIcon, BellIcon, HomeIcon } from '@heroicons/react/2
 import { useState } from 'react';
 
 interface NavbarProps {
+    avatar: string;
     login: string | null;
     logout: () => void;
 }
@@ -12,9 +13,8 @@ const solutions = [
     { name: 'Usuários ⭐', description: 'Controle os usuários, removendo-os quando necessário e dando as permissões necessárias como quiser!', href: '/usuarios', icon: UserGroupIcon },
 ];
 
-const Navbar: React.FC<NavbarProps> = ({ login, logout }) => {
+const Navbar: React.FC<NavbarProps> = ({ avatar, login, logout }) => {
     const [notifications, setNotifications] = useState<number>(5); // Exemplo: 5 notificações
-
     return (
         <header className="bg-transparent p-4 text-rose-600 flex justify-between items-center">
             <div className="flex items-center">
@@ -27,7 +27,7 @@ const Navbar: React.FC<NavbarProps> = ({ login, logout }) => {
             </div>
             <div className="flex items-center">
                 <img
-                    src="/avatars/1.png"
+                    src={`/avatars/${avatar}`}
                     alt="Avatar"
                     className="h-8 w-8 rounded-full mr-2"
                 />
