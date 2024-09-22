@@ -28,7 +28,7 @@ interface CriaUsuarioResposta {
 }
 
 interface GetUsuariosResposta {
-  usuarios: Usuario[];
+  todos: Usuario[];
 }
 
 const AUTENTICA = gql`
@@ -182,7 +182,7 @@ export function useAutentica() {
     setLoading(true);
     try {
       const data: GetUsuariosResposta = await client.request(GET_USUARIOS);
-      return data.usuarios;
+      return data.todos;
     } catch (err: any) {
       toast.error(err.response?.errors?.[0]?.message);
       return [];
