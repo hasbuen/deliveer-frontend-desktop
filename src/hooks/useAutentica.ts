@@ -8,12 +8,12 @@ const client = new GraphQLClient('http://148.113.204.23:3000/graphql');
 interface Usuario {
   id: string;
   login: string;
+  senha: string;
+  nome: string;
   token: string;
   avatar: string;
   superior: string;
   senhaSuperior: string;
-  senha: string;
-  nome: string;
 }
 
 interface AutenticaResposta {
@@ -156,10 +156,10 @@ export function useAutentica() {
       login,
       senha,
       nome,
-      avatar,
       aniversario,
       email,
       telefone,
+      avatar,
       superior,
       senhaSuperior,
     } = formData;
@@ -168,10 +168,10 @@ export function useAutentica() {
       login,
       senha,
       nome,
-      avatar,
       aniversario,
       email,
       telefone,
+      avatar,
       superior,
       senhaSuperior,
     };
