@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
-import { useAutentica } from "./hooks/useAutentica"; // Hook de autenticação
+import { useLogin } from "./hooks/useLogin"; // Hook de autenticação
 import Navbar from './Navbar';
 import SidebarMenu from './SidebarMenu';
 import Formulario from './Formulario';
@@ -16,7 +16,7 @@ const Usuarios: React.FC = () => {
     const [avatar, setAvatar] = useState<string>("");
     const [login, setLogin] = useState<string>("");
     const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
-    const { loading, cria, todos } = useAutentica();
+    const { loading, cria, todos } = useLogin();
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const navigate = useNavigate();
 
@@ -58,9 +58,9 @@ const Usuarios: React.FC = () => {
     ];
 
     const novoUsuario = (formData: { [key: string]: any }) => {
-        cria(formData);
+       // cria(formData);
         {loading && <p>Carregando...</p>}
-        // navigate('/usuarios'); 
+        navigate('/usuarios'); 
     };
 
     const fields = [
@@ -71,7 +71,7 @@ const Usuarios: React.FC = () => {
             { value: 'filial3', label: 'Filial 3' },
         ] },
         { label: 'Login', name: 'login', type: 'text' },
-        { label: 'Nome Completo', name: 'nomeCompleto', type: 'text' },
+        { label: 'Nome Completo', name: 'nome', type: 'text' },
         { label: 'Email', name: 'email', type: 'email' },
         { label: 'Telefone', name: 'telefone', type: 'phone' },
         { label: 'Senha', name: 'senha', type: 'password' },

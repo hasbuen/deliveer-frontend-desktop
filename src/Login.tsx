@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom'; 
-import { useAutentica } from "./hooks/useAutentica.ts";
+import { useLogin } from "./hooks/useLogin.ts";
 
 function Login() {
   const navigate = useNavigate();
@@ -9,8 +9,8 @@ function Login() {
   const [superior, setSuperior] = useState("");
   const [senhaSuperior, setSenhaSuperior] = useState("");
   const [confirmaSenha, setConfirmaSenha] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para controlar a visibilidade do modal
-  const { loading, autentica, redefine } = useAutentica();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { loading, autentica, redefine } = useLogin();
 
   const acessar = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -20,9 +20,15 @@ function Login() {
     }
   };
 
-  const redefinirSenha = (event: React.FormEvent<HTMLFormElement>) => {
+  const redefinirSenha = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    redefine(login, senha, confirmaSenha, superior, senhaSuperior);
+    const sucesso = await redefine(login, senha, confirmaSenha, superior);
+    if (sucesso) {
+      // Você pode adicionar uma mensagem de sucesso ou redirecionar para outra página
+      fecharRedefinirSenha();
+    } else {
+      // Aqui você pode adicionar uma lógica para mostrar uma mensagem de erro
+    }
   };
 
   const abrirRedefinirSenhaModal = () => {
@@ -31,6 +37,10 @@ function Login() {
 
   const fecharRedefinirSenha = () => {
     setIsModalOpen(false);
+    // Resetar os campos do modal
+    setSuperior("");
+    setSenhaSuperior("");
+    setConfirmaSenha("");
   };
 
   return (
@@ -126,6 +136,7 @@ function Login() {
                     value={superior}
                     onChange={(e) => setSuperior(e.target.value)}
                     className="block w-full rounded-lg p-2.5 border-0 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-fuchsia-600 sm:text-sm sm:leading-6"
+                    required
                   />
                 </div>
                 <div>
@@ -137,32 +148,23 @@ function Login() {
                     value={senhaSuperior}
                     onChange={(e) => setSenhaSuperior(e.target.value)}
                     className="block w-full rounded-lg p-2.5 border-0 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-fuchsia-600 sm:text-sm sm:leading-6"
+                    required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-rose-600">Login</label>
+                  <label className="block text-sm font-medium text-rose-600">Nova Senha</label>
                   <input
-                    id="login"
-                    name="login"
-                    type="text"
-                    value={login}
-                    onChange={(e) => setLogin(e.target.value)}
-                    className="block w-full rounded-lg p-2.5 border-0 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-fuchsia-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-rose-600">Senha</label>
-                  <input
-                    id="senha"
-                    name="senha"
+                    id="novaSenha"
+                    name="novaSenha"
                     type="password"
                     value={senha}
                     onChange={(e) => setSenha(e.target.value)}
                     className="block w-full rounded-lg p-2.5 border-0 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-fuchsia-600 sm:text-sm sm:leading-6"
+                    required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-rose-600">Confirmar Senha</label>
+                  <label className="block text-sm font-medium text-rose-600">Confirmar Nova Senha</label>
                   <input
                     id="confirmaSenha"
                     name="confirmaSenha"
@@ -170,6 +172,7 @@ function Login() {
                     value={confirmaSenha}
                     onChange={(e) => setConfirmaSenha(e.target.value)}
                     className="block w-full rounded-lg p-2.5 border-0 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-fuchsia-600 sm:text-sm sm:leading-6"
+                    required
                   />
                 </div>
                 <div className="flex justify-end space-x-2">
