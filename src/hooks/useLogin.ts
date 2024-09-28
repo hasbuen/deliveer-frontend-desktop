@@ -12,6 +12,7 @@ interface Usuario {
   login: string;      // Login do usuário
   nome: string;       // Nome do usuário
   isSuperior: boolean; // Indica se o usuário é superior
+  avatar: string;
 }
 
 // Interface para a resposta de autenticação
@@ -25,7 +26,7 @@ interface AutenticaResposta {
 }
 
 interface RedefineResposta {
-  redefine: Usuario;
+  redefine: AuthResponse;
 }
 
 interface CriaUsuarioResposta {
@@ -116,8 +117,9 @@ export const useLogin = () => {
       console.log(data.login)
 
       if (data.login) {
-        //localStorage.setItem('avatar', data.autentica.avatar);
+        localStorage.setItem('id', data.login.usuario.id);
         localStorage.setItem('login', data.login.usuario.login);
+        localStorage.setItem('avatar', data.login.usuario.avatar);
         localStorage.setItem('token', data.login.access_token);
         toast.success(`Bem-vindo(a), ${data.login.usuario.login}!`);
         return true;
@@ -141,9 +143,9 @@ export const useLogin = () => {
       const variables = { login, senha, superior, senhaSuperior };
       const data: RedefineResposta = await client.request(REDEFINE, variables);
 
-      localStorage.setItem('login', data.redefine.login);
-      localStorage.setItem('token', data.redefine.token);
-      toast.success(`Senha de ${data.redefine.login} redefinida com sucesso!`);
+      localStorage.setItem('login', data.redefine.usuario.login);
+      localStorage.setItem('token', data.redefine.access_token);
+      toast.success(`Senha de ${data.redefine.usuario.nome} redefinida com sucesso!`);
       return true;
     } catch (err: any) {
       console.error(err); // Adiciona log para depuração

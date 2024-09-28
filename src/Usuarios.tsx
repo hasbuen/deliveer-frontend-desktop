@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
-import { useLogin } from "./hooks/useLogin"; // Hook de autenticação
+import { useUsuarios } from "./hooks/useUsuarios"; // Hook de autenticação
 import Navbar from './Navbar';
 import SidebarMenu from './SidebarMenu';
 import Formulario from './Formulario';
@@ -16,7 +16,7 @@ const Usuarios: React.FC = () => {
     const [avatar, setAvatar] = useState<string>("");
     const [login, setLogin] = useState<string>("");
     const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
-    const { loading, cria, todos } = useLogin();
+    const { loading, todos } = useUsuarios();
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const navigate = useNavigate();
 
