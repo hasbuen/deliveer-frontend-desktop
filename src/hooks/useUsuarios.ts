@@ -8,20 +8,22 @@ interface Usuario {
   id: string;
   login: string;
   nome: string;
+  telefone: string;
   isSuperior: boolean;
 }
 
-interface GetUsuariosResposta {
-  todos: Usuario[];
+interface TodosUsuariosResposta {
+  todosUsuarios: Usuario[];
 }
 
 // Query GraphQL para obter os usuários
-const GET_USUARIOS = gql`
-  query getUsuarios {
-    getUsuarios {
+const TODOS_USUARIOS = gql`
+  query todosUsuarios {
+    todosUsuarios {
       id
-      telefone
+      login
       nome
+      telefone
       avatar
     }
   }
@@ -32,7 +34,7 @@ export const useUsuarios = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   // Função para buscar todos os usuários
-  const todos = async (): Promise<Usuario[]> => {
+  const todosUsuarios = async (): Promise<Usuario[]> => {
     setLoading(true);
 
     // Recupera o token do localStorage
@@ -46,8 +48,9 @@ export const useUsuarios = () => {
     });
 
     try {
-      const data: GetUsuariosResposta = await client.request(GET_USUARIOS);
-      return data.todos;
+      const data: TodosUsuariosResposta = await client.request(TODOS_USUARIOS);
+   
+      return data.todosUsuarios;
     } catch (err: any) {
       console.error(err); // Log para depuração
       toast.error(err.response?.errors?.[0]?.message || 'Erro ao buscar usuários');
@@ -57,5 +60,5 @@ export const useUsuarios = () => {
     }
   };
 
-  return { loading, todos };
+  return { loading, todosUsuarios };
 };

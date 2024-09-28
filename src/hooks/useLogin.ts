@@ -46,6 +46,7 @@ const LOGIN = gql`
         id
         login
         nome
+        avatar
         isSuperior
       }
     }
@@ -86,17 +87,6 @@ const CRIA = gql`
       superior: $superior,
       senhaSuperior: $senhaSuperior
     ) {
-      id
-      login
-      nome
-      avatar
-    }
-  }
-`;
-
-const GET_USUARIOS = gql`
-  query Todos {
-    todos {
       id
       login
       nome
@@ -182,20 +172,6 @@ export const useLogin = () => {
     }
   };
 
-  // Função para buscar todos os usuários
-  const todos = async (): Promise<Usuario[]> => {
-    setLoading(true);
-    try {
-      const data: GetUsuariosResposta = await client.request(GET_USUARIOS);
-      return data.todos;
-    } catch (err: any) {
-      console.error(err); // Adiciona log para depuração
-      toast.error(err.response?.errors?.[0]?.message || 'Erro ao buscar usuários');
-      return [];
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  return { loading, autentica, redefine, cria, todos };
+  return { loading, autentica, redefine, cria };
 }

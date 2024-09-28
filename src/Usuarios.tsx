@@ -16,7 +16,7 @@ const Usuarios: React.FC = () => {
     const [avatar, setAvatar] = useState<string>("");
     const [login, setLogin] = useState<string>("");
     const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
-    const { loading, todos } = useUsuarios();
+    const { loading, todosUsuarios } = useUsuarios();
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const navigate = useNavigate();
 
@@ -30,8 +30,8 @@ const Usuarios: React.FC = () => {
             setLogin(storedLogin);
         }
 
-        // Chama o método getUsuarios e mapeia os dados para o estado de usuarios
-        todos().then((usuarios: any[]) => {
+        // Chama o método getUsuarios apenas uma vez quando o componente for montado
+        todosUsuarios().then((usuarios: any[]) => {
             const mapeiaUsuarios = usuarios.map((usuario: any) => ({
                 nome: usuario.nome, 
                 telefone: usuario.telefone,
@@ -42,7 +42,8 @@ const Usuarios: React.FC = () => {
             console.error("Erro ao carregar os usuários", error);
         });
 
-    }, [navigate, todos]);
+    // O array de dependências vazio garante que o useEffect seja executado apenas uma vez
+    }, []);
 
     const logout = () => {
         localStorage.removeItem('login');
