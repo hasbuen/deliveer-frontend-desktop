@@ -29,14 +29,6 @@ interface RedefineResposta {
   redefine: AuthResponse;
 }
 
-interface CriaUsuarioResposta {
-  cria: Usuario;
-}
-
-interface GetUsuariosResposta {
-  todos: Usuario[];
-}
-
 // Consultas e mutações GraphQL
 const LOGIN = gql`
   mutation login($login: String!, $senha: String!) {
@@ -64,37 +56,6 @@ const REDEFINE = gql`
   }
 `;
 
-const CRIA = gql`
-  mutation Cria(
-    $login: String!,
-    $senha: String!,
-    $nome: String!,
-    $avatar: String!,
-    $aniversario: String!,
-    $email: String,
-    $telefone: String,
-    $superior: String,
-    $senhaSuperior: String
-  ) {
-    cria(
-      login: $login,
-      senha: $senha,
-      nome: $nome,
-      avatar: $avatar,
-      aniversario: $aniversario,
-      email: $email,
-      telefone: $telefone,
-      superior: $superior,
-      senhaSuperior: $senhaSuperior
-    ) {
-      id
-      login
-      nome
-      avatar
-    }
-  }
-`;
-
 // Hook personalizado para manipular autenticação e operações de usuários
 export const useLogin = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -104,7 +65,6 @@ export const useLogin = () => {
     setLoading(true);
     try {
       const data: AutenticaResposta = await client.request(LOGIN, { login, senha });
-      console.log(data.login)
 
       if (data.login) {
         localStorage.setItem('id', data.login.usuario.id);
@@ -118,7 +78,7 @@ export const useLogin = () => {
         return false;
       }
     } catch (err: any) {
-      console.error(err); // Adiciona log para depuração
+      console.error(err); 
       toast.error(err.response?.errors?.[0]?.message || 'Erro ao autenticar');
       return false;
     } finally {
@@ -146,32 +106,8 @@ export const useLogin = () => {
     }
   };
 
-  // Função para criar novo usuário
-  const cria = async (formData: {
-    login: string;
-    senha: string;
-    nome: string;
-    aniversario: string;
-    email: string;
-    telefone: string;
-    avatar: string;
-    superior: string;
-    senhaSuperior: string;
-  }): Promise<boolean> => {
-    setLoading(true);
-    try {
-      const data: CriaUsuarioResposta = await client.request(CRIA, formData);
-      toast.success(`Usuário ${data.cria.login} criado com sucesso!`);
-      return true;
-    } catch (err: any) {
-      console.error(err); // Adiciona log para depuração
-      toast.error(err.response?.errors?.[0]?.message || 'Erro ao criar usuário');
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  };
+  
 
 
-  return { loading, autentica, redefine, cria };
+  return { loading, autentica, redefine };
 }

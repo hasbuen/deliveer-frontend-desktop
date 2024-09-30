@@ -16,8 +16,9 @@ const Usuarios: React.FC = () => {
     const [avatar, setAvatar] = useState<string>("");
     const [login, setLogin] = useState<string>("");
     const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
-    const { loading, todosUsuarios } = useUsuarios();
+    const { loading, todosUsuarios, criaUsuario } = useUsuarios();
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null); // Estado para mensagem de erro
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,24 +27,29 @@ const Usuarios: React.FC = () => {
         if (!storedLogin) {
             navigate('/');
         } else {
-            setAvatar(storedAvatar || ""); 
+            setAvatar(storedAvatar || "");
             setLogin(storedLogin);
         }
 
         // Chama o método getUsuarios apenas uma vez quando o componente for montado
         todosUsuarios().then((usuarios: any[]) => {
-            const mapeiaUsuarios = usuarios.map((usuario: any) => ({
-                nome: usuario.nome, 
-                telefone: usuario.telefone,
-                avatar: usuario.avatar 
-            }));
-            setUsuarios(mapeiaUsuarios);
+            if (usuarios.length === 0) {
+                setErrorMessage(`Por que não começar a cadastrar novos usuários agora mesmo?`);
+            } else {
+                const mapeiaUsuarios = usuarios.map((usuario: any) => ({
+                    nome: usuario.nome,
+                    telefone: usuario.telefone,
+                    avatar: usuario.avatar
+                }));
+                setUsuarios(mapeiaUsuarios);
+                setErrorMessage(null); // Limpa a mensagem de erro caso usuários sejam encontrados
+            }
         }).catch(error => {
             console.error("Erro ao carregar os usuários", error);
+            setErrorMessage("Erro ao carregar os usuários.");
         });
 
-    // O array de dependências vazio garante que o useEffect seja executado apenas uma vez
-    }, []);
+    }, [navigate]); // Adiciona dependências corretas no useEffect
 
     const logout = () => {
         localStorage.removeItem('login');
@@ -58,19 +64,35 @@ const Usuarios: React.FC = () => {
         { name: 'Monitorar', href: '/usuarios/monitorar', icon: EyeIcon },
     ];
 
-    const novoUsuario = (formData: { [key: string]: any }) => {
-       // cria(formData);
-        {loading && <p>Carregando...</p>}
-        navigate('/usuarios'); 
+    interface FormDataUsuario {
+        login: string;
+        nome: string;
+        email: string;
+        superiorId: string;
+        senha: string;
+        telefone: string;
+        isSuperior: boolean;
+        token: string;
+        avatar: string;
+        aniversario: Date;
+        parametroId: string;
+        filialId: string;
+    }
+    const novoUsuario = (formData: FormDataUsuario) => {
+        console.log(formData)
+        criaUsuario(formData);
+        { loading && <p>Carregando...</p> }
     };
 
     const fields = [
-        { label: 'Superior', name: 'isSuperior', type: 'checkbox' },
-        { label: 'Filial', name: 'filial', type: 'select', options: [
-            { value: 'filial1', label: 'Filial 1' },
-            { value: 'filial2', label: 'Filial 2' },
-            { value: 'filial3', label: 'Filial 3' },
-        ] },
+        { label: 'Superior', name: 'isSuperior', type: 'checkbox', default: false },
+        {
+            label: 'Filial', name: 'filial', type: 'select', options: [
+                { value: 'filial1', label: 'Filial 1' },
+                { value: 'filial2', label: 'Filial 2' },
+                { value: 'filial3', label: 'Filial 3' },
+            ]
+        },
         { label: 'Login', name: 'login', type: 'text' },
         { label: 'Nome Completo', name: 'nome', type: 'text' },
         { label: 'Email', name: 'email', type: 'email' },
@@ -103,28 +125,47 @@ const Usuarios: React.FC = () => {
                                             Aqui estão os usuários registrados.
                                         </p>
                                     </div>
-                                    <ul role="list" className="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
-                                        {usuarios.map((usuario) => (
-                                            <li key={usuario.nome}>
-                                                <div className="flex items-center gap-x-6">
-                                                    <img alt="" src={`/avatars/${usuario.avatar}`}  className="h-16 w-16 rounded-full" />
-                                                    <div>
-                                                        <h3 className="text-base font-semibold leading-7 tracking-tight text-gray-900">{usuario.nome}</h3>
-                                                        <p className="text-sm font-semibold leading-6 text-indigo-600">{usuario.telefone}</p>
+                                    {/* Se estiver carregando, exibe a mensagem de carregamento */}
+                                    {loading ? (
+                                        <p className="text-lg leading-8 text-gray-600">Carregando...</p>
+                                    ) : errorMessage ? (
+                                        <p className="text-lg leading-8 text-gray-400">{errorMessage}</p>
+                                    ) : (
+                                        <ul role="list" className="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
+                                            {usuarios.map((usuario) => (
+                                                <li key={usuario.nome}>
+                                                    <div className="flex items-center gap-x-6">
+                                                        <img alt="" src={`/avatars/${usuario.avatar}`} className="h-16 w-16 rounded-full" />
+                                                        <div>
+                                                            <h3 className="text-base font-semibold leading-7 tracking-tight text-gray-900">{usuario.nome}</h3>
+                                                            <p className="text-sm font-semibold leading-6 text-indigo-600">{usuario.telefone}</p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                                 </div>
                             </div>
                         } />
                         <Route path="novo" element={
                             <div className="max-w-2xl rounded-md shadow-sm mx-auto">
-                                <Formulario name={"Novo usuário"} fields={fields} onSubmit={novoUsuario} />
+                                <Formulario name={"Novo usuário"} fields={fields} onSubmit={(data: any) => novoUsuario({
+                                    login: data.login,
+                                    nome: data.nome,
+                                    email: data.email,
+                                    superiorId: localStorage.getItem('id')?.toString() ?? "", 
+                                    senha: data.senha,
+                                    telefone: data.telefone,
+                                    isSuperior: data.isSuperior,
+                                    token: "", // ou outra lógica para obter isso
+                                    avatar: data.avatar,
+                                    aniversario: new Date(data.aniversario), // Certifique-se de converter corretamente
+                                    parametroId: "", // ou outra lógica para obter isso
+                                    filialId: "" // ou outra lógica para obter isso
+                                })} />
                             </div>
                         } />
-                        {/* Outras rotas podem ser adicionadas aqui */}
                     </Routes>
                 </main>
             </div>
