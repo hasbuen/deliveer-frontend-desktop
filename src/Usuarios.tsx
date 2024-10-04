@@ -16,7 +16,7 @@ const Usuarios: React.FC = () => {
     const [avatar, setAvatar] = useState<string>("");
     const [login, setLogin] = useState<string>("");
     const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
-    const { loading, todosUsuarios, criaUsuario } = useUsuarios();
+    const { loading, todosUsuarios, novoUsuario } = useUsuarios();
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const [errorMessage, setErrorMessage] = useState<string | null>(null); // Estado para mensagem de erro
     const navigate = useNavigate();
@@ -64,23 +64,8 @@ const Usuarios: React.FC = () => {
         { name: 'Monitorar', href: '/usuarios/monitorar', icon: EyeIcon },
     ];
 
-    interface FormDataUsuario {
-        login: string;
-        nome: string;
-        email: string;
-        superiorId: string;
-        senha: string;
-        telefone: string;
-        isSuperior: boolean;
-        token: string;
-        avatar: string;
-        aniversario: Date;
-        parametroId: string;
-        filialId: string;
-    }
-    const novoUsuario = (formData: FormDataUsuario) => {
-        console.log(formData)
-        criaUsuario(formData);
+    const registraUsuario = (formData: { [key: string]: any }) => {
+        novoUsuario(formData);
         { loading && <p>Carregando...</p> }
     };
 
@@ -150,19 +135,19 @@ const Usuarios: React.FC = () => {
                         } />
                         <Route path="novo" element={
                             <div className="max-w-2xl rounded-md shadow-sm mx-auto">
-                                <Formulario name={"Novo usuário"} fields={fields} onSubmit={(data: any) => novoUsuario({
+                                <Formulario name={"Novo usuário"} fields={fields} onSubmit={(data: any) => registraUsuario({
                                     login: data.login,
                                     nome: data.nome,
                                     email: data.email,
                                     superiorId: localStorage.getItem('id')?.toString() ?? "", 
                                     senha: data.senha,
+                                    aniversario: new Date(data.aniversario).toISOString().split('T')[0],
                                     telefone: data.telefone,
-                                    isSuperior: data.isSuperior,
-                                    token: "", // ou outra lógica para obter isso
+                                    isSuperior: data.isSuperior ?? false,
+                                    token: null, 
                                     avatar: data.avatar,
-                                    aniversario: new Date(data.aniversario), // Certifique-se de converter corretamente
-                                    parametroId: "", // ou outra lógica para obter isso
-                                    filialId: "" // ou outra lógica para obter isso
+                                    parametroId: data.parametroId ?? null,
+                                    filialId: data.filialId ?? null 
                                 })} />
                             </div>
                         } />

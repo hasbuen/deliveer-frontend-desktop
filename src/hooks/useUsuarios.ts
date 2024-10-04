@@ -5,27 +5,26 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // Interface para o usuário essencial
 interface Usuario {
-  id: string;
   login: String;
   nome: String;
   email: String;
   superiorId: String;
   senha: String;
+  aniversario: Date;
   telefone: String;
   isSuperior: boolean;
-  token: String;
-  avatar: String;
-  aniversario: Date;
-  parametroId: String;
-  filialId: String
+  token: string | null; // Permite null
+  avatar: string | null; // Permite null
+  parametroId: string | null; // Permite null
+  filialId: string | null; // Permite null
 }
 
 interface TodosUsuariosResposta {
   todosUsuarios: Usuario[];
 }
 
-interface CriateUsuarioResposta {
-  criateUsuario: Usuario;
+interface NovoUsuarioResposta {
+  novoUsuario: Usuario;
 }
 
 const TODOS_USUARIOS = gql`
@@ -39,41 +38,49 @@ const TODOS_USUARIOS = gql`
   }
 `;
 
-// Mutation GraphQL para criar um novo usuário
-const CRIA_USUARIO = gql`
-  mutation createUsuario(
-    $login: String!,
-    $nome: String!,
-    $email: String!,
-    $superiorId: String!,
-    $senha: String!,
-    $telefone: String,
-    $isSuperior: Boolean,
-    $token: String,
-    $avatar: String,
-    $aniversario: Date,
-    $parametroId: String,
-    $filialId: String,
-  ) {
-  createUsuario(
+const NOVO_USUARIO = gql`
+mutation novoUsuario(
+  $login: String!,
+  $nome: String!,
+  $email: String!,
+  $superiorId: String!,
+  $senha: String!,
+  $aniversario: String!,
+  $telefone: String!,
+  $isSuperior: Boolean!,
+  $token: String,
+  $avatar: String,
+  $parametroId: String,
+  $filialId: String
+) {
+  novoUsuario(
     login: $login,
     nome: $nome,
     email: $email,
     superiorId: $superiorId,
     senha: $senha,
+    aniversario: $aniversario,
     telefone: $telefone,
     isSuperior: $isSuperior,
     token: $token,
     avatar: $avatar,
-    aniversario: $aniversario,
     parametroId: $parametroId,
-    filialId: $filialId,
-    ) {
-        id
+    filialId: $filialId
+  ) {
+        login
         nome
+        email
+        superiorId
+        senha
+        aniversario
+        telefone
+        isSuperior
+        token
         avatar
-      }
+        parametroId
+        filialId
   }
+}
 `;
 
 // Hook personalizado para manipular autenticação e operações de usuários
@@ -85,7 +92,7 @@ export const useUsuarios = () => {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  });  
+  });
 
   // Função para buscar todos os usuários
   const todosUsuarios = async (): Promise<Usuario[]> => {
@@ -105,28 +112,33 @@ export const useUsuarios = () => {
     }
   };
 
-  // Função para criar novo usuário
-  const criaUsuario = async (formData: {
-    login: string,
-    nome: string,
-    email: string,
-    superiorId: string,
-    senha: string,
-    telefone: string,
-    isSuperior: boolean,
-    token: string,
-    avatar: string,
-    aniversario: Date,
-    parametroId: string,
-    filialId: string,
-  }): Promise<boolean> => {
-    setLoading(true);
+  const novoUsuario = async (formData: { [key: string]: any }) => {
+    const { login, nome, email, superiorId, senha, aniversario, telefone, isSuperior, token, avatar, parametroId, filialId } = formData;
+
+    const variables = {
+      login,
+      nome,
+      email,
+      superiorId,
+      senha,
+      aniversario,
+      telefone,
+      isSuperior,
+      token,
+      avatar,
+      parametroId,
+      filialId,
+    };
+
+    setLoading(true)
+
     try {
-      const data: CriateUsuarioResposta = await client.request(CRIA_USUARIO, formData);
-      toast.success(`Usuário ${data.criateUsuario.login} criado com sucesso!`);
+      const data: NovoUsuarioResposta = await client.request(NOVO_USUARIO, variables );
+      toast.success(`Usuário ${data.novoUsuario.login} criado com sucesso!`);
       return true;
     } catch (err: any) {
-      console.error(err); // Adiciona log para depuração
+      console.error("Erro ao criar usuário:", err);
+
       toast.error(err.response?.errors?.[0]?.message || 'Erro ao criar usuário');
       return false;
     } finally {
@@ -134,5 +146,6 @@ export const useUsuarios = () => {
     }
   };
 
-  return { loading, todosUsuarios, criaUsuario };
+
+  return { loading, todosUsuarios, novoUsuario };
 };

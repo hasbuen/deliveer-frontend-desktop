@@ -62,7 +62,7 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                             {avatars.map((avatar) => (
                                 <div key={avatar} className="flex flex-col items-center mb-2 mx-1">
                                     <img
-                                        src={`/avatars/${avatar}`} // Ajuste o caminho conforme necessário
+                                        src={`/avatars/${avatar}`} 
                                         alt={avatar}
                                         className={`w-16 h-16 rounded-full cursor-pointer border-2 ${formData.avatar === avatar ? 'border-rose-600' : 'border-transparent'} hover:border-rose-600`}
                                         onClick={() => setFormData(prev => ({ ...prev, avatar }))}
