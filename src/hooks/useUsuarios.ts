@@ -130,6 +130,7 @@ export const useUsuarios = () => {
       filialId,
     };
 
+    console.log("variables:  ", JSON.stringify(variables))
     setLoading(true)
 
     try {
