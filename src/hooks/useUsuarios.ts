@@ -27,10 +27,19 @@ interface NovoUsuarioResposta {
   novoUsuario: Usuario;
 }
 
+interface BuscaUsuarioResposta {
+  buscaUsuario: { id: string };
+}
+
+interface EditaUsuarioResposta {
+  editaUsuario: Usuario;
+}
+
 const TODOS_USUARIOS = gql`
   mutation todosUsuarios($superiorId: String!) {
     todosUsuarios(superiorId: $superiorId) {
       id
+      login
       nome
       telefone
       avatar
@@ -83,6 +92,49 @@ mutation novoUsuario(
 }
 `;
 
+const EDITA_USUARIO = gql`
+  mutation editaUsuario(
+    $id: String!,
+    $nome: String,
+    $email: String,
+    $superiorId: String,
+    $senha: String,
+    $aniversario: String,
+    $telefone: String,
+    $isSuperior: Boolean,
+    $token: String,
+    $avatar: String,
+    $parametroId: String,
+    $filialId: String
+  ) {
+    editaUsuario(
+      id: $id,
+      nome: $nome,
+      email: $email,
+      superiorId: $superiorId,
+      senha: $senha,
+      aniversario: $aniversario,
+      telefone: $telefone,
+      isSuperior: $isSuperior,
+      token: $token,
+      avatar: $avatar,
+      parametroId: $parametroId,
+      filialId: $filialId
+    ) {
+      nome
+      email
+      superiorId
+      aniversario
+      telefone
+      isSuperior
+      token
+      avatar
+      parametroId
+      filialId
+    }
+  }
+`;
+
 // Hook personalizado para manipular autenticação e operações de usuários
 export const useUsuarios = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -130,11 +182,10 @@ export const useUsuarios = () => {
       filialId,
     };
 
-    console.log("variables:  ", JSON.stringify(variables))
     setLoading(true)
 
     try {
-      const data: NovoUsuarioResposta = await client.request(NOVO_USUARIO, variables );
+      const data: NovoUsuarioResposta = await client.request(NOVO_USUARIO, variables);
       toast.success(`Usuário ${data.novoUsuario.login} criado com sucesso!`);
       return true;
     } catch (err: any) {
@@ -147,6 +198,61 @@ export const useUsuarios = () => {
     }
   };
 
+  const editaUsuario = async (formData: { [key: string]: any }) => {
+    const { login, nome, email, superiorId, senha, aniversario, telefone, isSuperior, token, avatar, parametroId, filialId } = formData;
 
-  return { loading, todosUsuarios, novoUsuario };
+    // 1. Primeiro, busque o ID do usuário pelo login
+    let usuarioId: string;
+
+    try {
+      const response: BuscaUsuarioResposta = await client.request(
+        gql`
+          query buscaUsuario($login: String!) {
+            buscaUsuario(login: $login) {
+              id
+            }
+          }
+        `,
+        { login }
+      );
+      usuarioId = response.buscaUsuario.id;
+    } catch (err: any) {
+      console.error("Erro ao buscar usuário:", err);
+      toast.error(err.response?.errors?.[0]?.message || 'Erro ao buscar usuário');
+      return false;
+    }
+
+    // 2. Agora, faça a atualização dos dados do usuário
+    const variables = {
+      id: usuarioId,
+      nome: nome || null,
+      email: email || null,
+      superiorId: superiorId || null,
+      senha: senha || null,
+      aniversario: aniversario || null,
+      telefone: telefone || null,
+      isSuperior: isSuperior !== undefined ? isSuperior : false,
+      token: token || null,
+      avatar: avatar || null,
+      parametroId: parametroId || null,
+      filialId: filialId || null,
+    };
+
+    setLoading(true);
+
+    try {
+      const data: EditaUsuarioResposta = await client.request(EDITA_USUARIO, variables);
+      window.location.reload();
+      return true;
+    } catch (err: any) {
+      console.error("Erro ao editar usuário:", err);
+      toast.error(err.response?.errors?.[0]?.message || 'Erro ao editar usuário');
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  return { loading, todosUsuarios, novoUsuario, editaUsuario };
 };

@@ -7,6 +7,7 @@ import Formulario from './Formulario';
 import { UserGroupIcon, UserPlusIcon, PencilSquareIcon, UserMinusIcon, EyeIcon } from '@heroicons/react/24/outline';
 
 interface Usuario {
+    login: string;
     nome: string;
     telefone: string;
     avatar: string;
@@ -16,9 +17,11 @@ const Usuarios: React.FC = () => {
     const [avatar, setAvatar] = useState<string>("");
     const [login, setLogin] = useState<string>("");
     const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
-    const { loading, todosUsuarios, novoUsuario } = useUsuarios();
+    const { loading, todosUsuarios, novoUsuario, editaUsuario } = useUsuarios();
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null); // Estado para mensagem de erro
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [usuarioSelecionado, setUsuarioSelecionado] = useState<Usuario | null>(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -31,30 +34,41 @@ const Usuarios: React.FC = () => {
             setLogin(storedLogin);
         }
 
-        // Chama o método getUsuarios apenas uma vez quando o componente for montado
+        // Carregando todos os usuários
         todosUsuarios().then((usuarios: any[]) => {
             if (usuarios.length === 0) {
                 setErrorMessage(`Por que não começar a cadastrar novos usuários agora mesmo?`);
             } else {
                 const mapeiaUsuarios = usuarios.map((usuario: any) => ({
+                    login: usuario.login,
                     nome: usuario.nome,
                     telefone: usuario.telefone,
                     avatar: usuario.avatar
                 }));
                 setUsuarios(mapeiaUsuarios);
-                setErrorMessage(null); // Limpa a mensagem de erro caso usuários sejam encontrados
+                setErrorMessage(null);
             }
         }).catch(error => {
             console.error("Erro ao carregar os usuários", error);
             setErrorMessage("Erro ao carregar os usuários.");
         });
 
-    }, [navigate]); // Adiciona dependências corretas no useEffect
+    }, [navigate]);
 
     const logout = () => {
         localStorage.removeItem('login');
         localStorage.removeItem('token');
         navigate('/');
+    };
+
+    const abrirAtualizaModal = (usuario: Usuario) => {
+        setUsuarioSelecionado(usuario);
+        setIsModalOpen(true);
+    };
+
+    const fecharAtualizaModal = () => {
+        setIsModalOpen(false);
+        setUsuarioSelecionado(null);
     };
 
     const menuItems = [
@@ -66,7 +80,13 @@ const Usuarios: React.FC = () => {
 
     const registraUsuario = (formData: { [key: string]: any }) => {
         novoUsuario(formData);
-        { loading && <p>Carregando...</p> }
+    };
+
+    const atualizaUsuario = (formData: { [key: string]: any }) => {
+        editaUsuario(formData)
+            .then(() => {
+                fecharAtualizaModal(); // Fecha o modal após a atualização
+            });
     };
 
     const fields = [
@@ -81,7 +101,7 @@ const Usuarios: React.FC = () => {
         { label: 'Login', name: 'login', type: 'text' },
         { label: 'Nome Completo', name: 'nome', type: 'text' },
         { label: 'Email', name: 'email', type: 'email' },
-        { label: 'Telefone', name: 'telefone', type: 'phone' },
+        { label: 'Telefone', name: 'telefone', type: 'tel' },
         { label: 'Senha', name: 'senha', type: 'password' },
         { label: 'Confirmar senha', name: 'confirmarSenha', type: 'password' },
         { label: 'Aniversário', name: 'aniversario', type: 'date' },
@@ -110,7 +130,6 @@ const Usuarios: React.FC = () => {
                                             Aqui estão os usuários registrados.
                                         </p>
                                     </div>
-                                    {/* Se estiver carregando, exibe a mensagem de carregamento */}
                                     {loading ? (
                                         <p className="text-lg leading-8 text-gray-600">Carregando...</p>
                                     ) : errorMessage ? (
@@ -135,25 +154,89 @@ const Usuarios: React.FC = () => {
                         } />
                         <Route path="novo" element={
                             <div className="max-w-2xl rounded-md shadow-sm mx-auto">
-                                <Formulario name={"Novo usuário"} fields={fields} onSubmit={(data: any) => registraUsuario({
-                                    login: data.login,
-                                    nome: data.nome,
-                                    email: data.email,
-                                    superiorId: localStorage.getItem('id')?.toString() ?? "", 
-                                    senha: data.senha,
-                                    aniversario: new Date(data.aniversario).toISOString().split('T')[0],
-                                    telefone: data.telefone,
-                                    isSuperior: data.isSuperior ?? false,
-                                    token: null, 
-                                    avatar: data.avatar,
-                                    parametroId: data.parametroId ?? null,
-                                    filialId: data.filialId ?? null 
-                                })} />
+                                <Formulario
+                                    name={"Novo usuário"}
+                                    fields={fields}
+                                    onSubmit={(data: any) => registraUsuario({
+                                        login: data.login,
+                                        nome: data.nome,
+                                        email: data.email,
+                                        superiorId: localStorage.getItem('id')?.toString() ?? "",
+                                        senha: data.senha,
+                                        aniversario: new Date(data.aniversario).toISOString().split('T')[0],
+                                        telefone: data.telefone,
+                                        isSuperior: data.isSuperior ?? false,
+                                        token: null,
+                                        avatar: data.avatar,
+                                        parametroId: data.parametroId ?? null,
+                                        filialId: data.filialId ?? null
+                                    })}
+                                />
+                            </div>
+                        } />
+                        <Route path="editar" element={
+                            <div className="max-w-7xl mx-auto py-10">
+                                <h2 className="text-3xl font-bold tracking-tight text-rose-600 py-10">Editar usuários</h2>
+                                <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
+                                    <table className="min-w-full divide-y divide-gray-300">
+                                        <thead className="bg-gray-50">
+                                            <tr>
+                                                <th scope="col"></th>
+                                                <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Login</th>
+                                                <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Nome</th>
+                                                <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Telefone</th>
+                                                <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="bg-white divide-y divide-gray-200">
+                                            {usuarios.map((usuario) => (
+                                                <tr key={usuario.login}>
+                                                    <td className="px-4 py-2">
+                                                        <img src={`/avatars/${usuario.avatar}`} alt="" className="h-12 w-12 rounded-full" />
+                                                    </td>
+                                                    <td className="px-4 py-2">{usuario.login}</td>
+                                                    <td className="px-4 py-2">{usuario.nome}</td>
+                                                    <td className="px-4 py-2">{usuario.telefone}</td>
+                                                    <td className="px-4 py-2">
+                                                        <button
+                                                            onClick={() => abrirAtualizaModal(usuario)}
+                                                            className="text-indigo-600 hover:text-indigo-900">
+                                                            <PencilSquareIcon className='w-5 h-5 mr-2' />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         } />
                     </Routes>
                 </main>
             </div>
+            {isModalOpen && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="bg-gray-300 rounded-lg shadow-lg p-6">
+                        <Formulario
+                            name={`LOGIN: ${usuarioSelecionado?.login}`}
+                            fields={[
+                                { label: 'Nome', name: 'nome', type: 'text' },
+                                { label: 'Telefone', name: 'telefone', type: 'tel' },
+                            ]}
+                            onSubmit={(data: any) => atualizaUsuario({
+                                ...usuarioSelecionado,
+                                nome: data.nome,
+                                telefone: data.telefone,
+                            })}
+                        />
+                        <button
+                            className="mt-4 bg-transparent text-gray-950 py-2 px-4"
+                            onClick={fecharAtualizaModal}>
+                            Cancelar edição!
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
