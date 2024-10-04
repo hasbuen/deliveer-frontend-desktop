@@ -9,8 +9,10 @@ import { UserGroupIcon, UserPlusIcon, PencilSquareIcon, UserMinusIcon, EyeIcon }
 interface Usuario {
     login: string;
     nome: string;
+    email: string;
     telefone: string;
     avatar: string;
+    isSuperior: string;
 }
 
 const Usuarios: React.FC = () => {
@@ -42,8 +44,10 @@ const Usuarios: React.FC = () => {
                 const mapeiaUsuarios = usuarios.map((usuario: any) => ({
                     login: usuario.login,
                     nome: usuario.nome,
+                    email: usuario.email,
                     telefone: usuario.telefone,
-                    avatar: usuario.avatar
+                    avatar: usuario.avatar,
+                    isSuperior: usuario.isSuperior
                 }));
                 setUsuarios(mapeiaUsuarios);
                 setErrorMessage(null);
@@ -184,7 +188,9 @@ const Usuarios: React.FC = () => {
                                                 <th scope="col"></th>
                                                 <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Login</th>
                                                 <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Nome</th>
+                                                <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Email</th>
                                                 <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Telefone</th>
+                                                <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Superior?</th>
                                                 <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider"></th>
                                             </tr>
                                         </thead>
@@ -196,7 +202,9 @@ const Usuarios: React.FC = () => {
                                                     </td>
                                                     <td className="px-4 py-2">{usuario.login}</td>
                                                     <td className="px-4 py-2">{usuario.nome}</td>
+                                                    <td className="px-4 py-2">{usuario.email}</td>
                                                     <td className="px-4 py-2">{usuario.telefone}</td>
+                                                    <td className="px-4 py-2">{usuario.isSuperior}</td>
                                                     <td className="px-4 py-2">
                                                         <button
                                                             onClick={() => abrirAtualizaModal(usuario)}
@@ -215,17 +223,19 @@ const Usuarios: React.FC = () => {
                 </main>
             </div>
             {isModalOpen && (
-                <div className="fixed inset-0 flex items-center justify-center z-50">
-                    <div className="bg-gray-300 rounded-lg shadow-lg p-6">
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
                         <Formulario
-                            name={`LOGIN: ${usuarioSelecionado?.login}`}
+                            name={`Atualização`}
                             fields={[
                                 { label: 'Nome', name: 'nome', type: 'text' },
+                                { label: 'Enail', name: 'email', type: 'email' },
                                 { label: 'Telefone', name: 'telefone', type: 'tel' },
                             ]}
                             onSubmit={(data: any) => atualizaUsuario({
                                 ...usuarioSelecionado,
                                 nome: data.nome,
+                                email: data.email,
                                 telefone: data.telefone,
                             })}
                         />

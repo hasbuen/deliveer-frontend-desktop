@@ -41,8 +41,10 @@ const TODOS_USUARIOS = gql`
       id
       login
       nome
+      email
       telefone
       avatar
+      isSuperior
     }
   }
 `;
