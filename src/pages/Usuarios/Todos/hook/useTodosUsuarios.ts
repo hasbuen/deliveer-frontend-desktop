@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { gql } from 'graphql-request';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
-import { isAuthenticated } from '../../../../utils/auth';
+
 
 // Interface para o usuário essencial
 interface Usuario {
@@ -18,7 +18,7 @@ interface Usuario {
   token: string | null;
   avatar: string | null;
   parametroId: string | null;
-  filialId: string | null; 
+  filialId: string | null;
 }
 
 interface TodosUsuariosResposta {
@@ -41,15 +41,11 @@ const TODOS_USUARIOS = gql`
 
 export const useTodosUsuarios = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const navigate = useNavigate(); // Criar uma instância do useNavigate
+  const navigate = useNavigate();
 
   const client = getGraphQLClient();
 
   const todosUsuarios = async (): Promise<Usuario[]> => {
-
-    // Verifique se o usuário está autenticado
-    if (!isAuthenticated())
-
     setLoading(true);
 
     try {
@@ -64,7 +60,8 @@ export const useTodosUsuarios = () => {
         // Limpar o localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('id');
-        
+
+        toast.warning("Sessão expirada, faça o login novamente!");
         // Redirecionar para a tela de login
         navigate('/');
       } else {

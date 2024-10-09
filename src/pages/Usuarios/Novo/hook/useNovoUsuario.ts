@@ -4,7 +4,6 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
-import { isAuthenticated } from '../../../../utils/auth';
 
 // Interface para o usuário essencial
 interface Usuario {
@@ -77,17 +76,12 @@ mutation novoUsuario(
 
 export const useNovoUsuario = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
+  // Verifique se o usuário está autenticado
   const client = getGraphQLClient();
 
   const novoUsuario = async (formData: { [key: string]: any }) => {
-
-    // Verifique se o usuário está autenticado
-    if (!isAuthenticated()) {
-      toast.error('Usuário não autenticado');
-      return false;
-    }
 
     const {
       login,
@@ -134,11 +128,11 @@ export const useNovoUsuario = () => {
         // Limpar o localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('id');
-
+        toast.warning("Sessão expirada, faça o login novamente!");
         // Redirecionar para a tela de login
         navigate('/');
       } else {
-        toast.error(err.response?.errors?.[0]?.message || 'Erro ao criar usuário');
+        toast.error(err.response?.errors?.[0]?.message || 'Erro ao salvar usuários');
       }
       return false;
     } finally {

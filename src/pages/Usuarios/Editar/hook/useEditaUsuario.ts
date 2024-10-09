@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { gql } from 'graphql-request';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
-import { isAuthenticated } from '../../../../utils/auth';
 
 // Interface para o usuário essencial
 interface Usuario {
@@ -74,17 +73,11 @@ const EDITA_USUARIO = gql`
 
 export const useEditaUsuario = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const navigate = useNavigate(); // Criar uma instância do useNavigate
-  
+  const navigate = useNavigate();
+
   const client = getGraphQLClient();
 
   const editaUsuario = async (formData: { [key: string]: any }) => {
-
-    // Verifique se o usuário está autenticado
-    if (!isAuthenticated()) {
-      toast.error('Usuário não autenticado');
-      return false;
-    }
 
     const { login, nome, email, superiorId, senha, aniversario, telefone, isSuperior, token, avatar, parametroId, filialId } = formData;
 
@@ -105,7 +98,18 @@ export const useEditaUsuario = () => {
       usuarioId = response.buscaUsuario.id;
     } catch (err: any) {
       console.error("Erro ao buscar usuário:", err);
-      toast.error(err.response?.errors?.[0]?.message || 'Erro ao buscar usuário');
+
+      // Verificar se a resposta contém "Unauthorized"
+      if (err.response?.errors?.[0]?.message === 'Unauthorized') {
+        // Limpar o localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('id');
+        toast.warning("Sessão expirada, faça o login novamente!");
+        // Redirecionar para a tela de login
+        navigate('/');
+      } else {
+        toast.error(err.response?.errors?.[0]?.message || 'Erro ao editar usuários');
+      }
       return false;
     }
 
@@ -134,17 +138,9 @@ export const useEditaUsuario = () => {
     } catch (err: any) {
       console.error("Erro ao editar usuário:", err);
 
-      // Verificar se a resposta contém "Unauthorized"
-      if (err.response?.errors?.[0]?.message === 'Unauthorized') {
-        // Limpar o localStorage
-        localStorage.removeItem('token');
-        localStorage.removeItem('id');
-        
-        // Redirecionar para a tela de login
-        navigate('/');
-      } else {
-        toast.error(err.response?.errors?.[0]?.message || 'Erro ao editar usuário');
-      }
+
+      toast.error(err.response?.errors?.[0]?.message || 'Erro ao editar usuário');
+
 
       return false;
     } finally {

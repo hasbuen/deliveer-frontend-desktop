@@ -67,7 +67,7 @@ const EditaUsuario: React.FC = () => {
     return (
         <div className="max-w-7xl mx-auto py-10">
             <h2 className="text-3xl font-bold tracking-tight text-rose-600 py-10">Editar usuários</h2>
-            <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
+            <div className="border-b border-gray-200 shadow sm:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-300">
                     <thead className="bg-rose-400 text-black">
                         <tr>
@@ -80,28 +80,32 @@ const EditaUsuario: React.FC = () => {
                             <th scope="col"></th>
                         </tr>
                     </thead>
-                    <tbody className="bg-rose-200 divide-y divide-white">
-                        {usuarios.map(usuario => (
-                            <tr key={usuario.login} className='text-black'>
-                                <td className="px-4 py-2">
-                                    <img src={`/avatars/${usuario.avatar}`} alt={usuario.nome} className="h-12 w-12 rounded-full" />
-                                </td>
-                                <td className="px-4 py-2">{usuario.login}</td>
-                                <td className="px-4 py-2">{usuario.nome}</td>
-                                <td className="px-4 py-2">{usuario.email}</td>
-                                <td className="px-4 py-2">{usuario.telefone}</td>
-                                <td className="px-4 py-2">{usuario.isSuperior ? 'Sim' : 'Não'}</td>
-                                <td className="px-4 py-2">
-                                    <button
-                                        onClick={() => abrirAtualizaModal(usuario)}
-                                        className="text-indigo-600 hover:text-indigo-900">
-                                        <PencilSquareIcon className='w-5 h-5 mr-2' />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
                 </table>
+                <div className="overflow-y-auto h-96"> {/* Adicionando o scroll no contêiner do tbody */}
+                    <table className="min-w-full divide-y divide-gray-300">
+                        <tbody className="bg-rose-200 divide-y divide-white">
+                            {usuarios.map(usuario => (
+                                <tr key={usuario.login} className='text-black'>
+                                    <td className="px-4 py-2">
+                                        <img src={`/avatars/${usuario.avatar}`} alt={usuario.nome} className="h-12 w-12 rounded-full" />
+                                    </td>
+                                    <td className="px-4 py-2">{usuario.login}</td>
+                                    <td className="px-4 py-2">{usuario.nome}</td>
+                                    <td className="px-4 py-2">{usuario.email}</td>
+                                    <td className="px-4 py-2">{usuario.telefone}</td>
+                                    <td className="px-4 py-2">{usuario.isSuperior ? 'Sim' : 'Não'}</td>
+                                    <td className="px-4 py-2">
+                                        <button
+                                            onClick={() => abrirAtualizaModal(usuario)}
+                                            className="text-indigo-600 hover:text-indigo-900">
+                                            <PencilSquareIcon className='w-5 h-5 mr-2' />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             {isModalOpen && usuarioSelecionado && (
