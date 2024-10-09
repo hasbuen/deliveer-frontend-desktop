@@ -6,10 +6,14 @@ const NovoUsuario: React.FC = () => {
     const { novoUsuario } = useNovoUsuario();
 
     const registraUsuario = (formData: { [key: string]: any }) => {
-        novoUsuario(formData);
+        const status = 0; 
+        const superiorId = localStorage.getItem('id')?.toString() ?? "";
+        novoUsuario({ ...formData, status, superiorId });
     };
 
     const fields = [
+        { label: 'Superior', name: 'isSuperior', type: 'checkbox' },
+        { label: 'Filial', name: 'filial', type: 'text' },
         { label: 'Login', name: 'login', type: 'text' },
         { label: 'Nome Completo', name: 'nome', type: 'text' },
         { label: 'Email', name: 'email', type: 'email' },
@@ -17,6 +21,8 @@ const NovoUsuario: React.FC = () => {
         { label: 'Senha', name: 'senha', type: 'password' },
         { label: 'Confirmar senha', name: 'confirmarSenha', type: 'password' },
         { label: 'Aniversário', name: 'aniversario', type: 'date' },
+        { label: 'CEP', name: 'cep', type: 'text' },
+        { label: 'Endereço', name: 'endereço', type: 'text' },
         { label: 'Avatar', name: 'avatar', type: 'file' }
     ];
 

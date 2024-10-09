@@ -1,17 +1,19 @@
 import { useState } from 'react';
-import { GraphQLClient, gql } from 'graphql-request';
+import { gql } from 'graphql-request';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom'; 
+import getGraphQLClient from '../../../../utils/graphqlClient';
+import { isAuthenticated } from '../../../../utils/auth';
 
 // Interface para o usuário essencial
 interface Usuario {
-  login: String;
-  nome: String;
-  email: String;
-  superiorId: String;
-  senha: String;
+  login: string;
+  nome: string;
+  email: string;
+  superiorId: string;
+  senha: string;
   aniversario: Date;
-  telefone: String;
+  telefone: string;
   isSuperior: boolean;
   token: string | null; // Permite null
   avatar: string | null; // Permite null
@@ -70,17 +72,20 @@ const EDITA_USUARIO = gql`
   }
 `;
 
-export const useUsuarios = () => {
+export const useEditaUsuario = () => {
   const [loading, setLoading] = useState<boolean>(false);
-
-  const token = localStorage.getItem('token');
-  const client = new GraphQLClient('http://148.113.204.23:3000/graphql', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const navigate = useNavigate(); // Criar uma instância do useNavigate
+  
+  const client = getGraphQLClient();
 
   const editaUsuario = async (formData: { [key: string]: any }) => {
+
+    // Verifique se o usuário está autenticado
+    if (!isAuthenticated()) {
+      toast.error('Usuário não autenticado');
+      return false;
+    }
+
     const { login, nome, email, superiorId, senha, aniversario, telefone, isSuperior, token, avatar, parametroId, filialId } = formData;
 
     // 1. Primeiro, busque o ID do usuário pelo login
@@ -128,13 +133,24 @@ export const useUsuarios = () => {
       return true;
     } catch (err: any) {
       console.error("Erro ao editar usuário:", err);
-      toast.error(err.response?.errors?.[0]?.message || 'Erro ao editar usuário');
+
+      // Verificar se a resposta contém "Unauthorized"
+      if (err.response?.errors?.[0]?.message === 'Unauthorized') {
+        // Limpar o localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('id');
+        
+        // Redirecionar para a tela de login
+        navigate('/');
+      } else {
+        toast.error(err.response?.errors?.[0]?.message || 'Erro ao editar usuário');
+      }
+
       return false;
     } finally {
       setLoading(false);
     }
   };
-
 
   return { loading, editaUsuario };
 };

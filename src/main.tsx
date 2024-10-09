@@ -1,10 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Login from "./Login";
-import Dashboard from "./Dashboard";
-import Usuarios from "./Usuarios";
-import "./input.css";
+import Login from "./pages/Login/Login";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import Usuarios from "./pages/Usuarios/Usuarios";
+import "./assets/styles/input.css";
 import { ToastContainer } from "react-toastify";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

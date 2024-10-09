@@ -1,11 +1,15 @@
 import { useState } from 'react';
-import { GraphQLClient, gql } from 'graphql-request';
+import { gql } from 'graphql-request';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+import getGraphQLClient from '../../../../utils/graphqlClient';
+import { isAuthenticated } from '../../../../utils/auth';
 
 // Interface para o usuário essencial
 interface Usuario {
   login: String;
+  status: number;
   nome: String;
   email: String;
   superiorId: String;
@@ -13,10 +17,10 @@ interface Usuario {
   aniversario: Date;
   telefone: String;
   isSuperior: boolean;
-  token: string | null; // Permite null
-  avatar: string | null; // Permite null
-  parametroId: string | null; // Permite null
-  filialId: string | null; // Permite null
+  token: string | null;
+  avatar: string | null;
+  parametroId: string | null;
+  filialId: string | null;
 }
 
 interface NovoUsuarioResposta {
@@ -73,28 +77,31 @@ mutation novoUsuario(
 
 export const useNovoUsuario = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const navigate = useNavigate(); 
 
-  const token = localStorage.getItem('token');
-  const client = new GraphQLClient('http://148.113.204.23:3000/graphql', {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const client = getGraphQLClient();
 
   const novoUsuario = async (formData: { [key: string]: any }) => {
-    const { 
-      login, 
-      status, 
-      nome, 
-      email, 
-      superiorId, 
-      senha, 
-      aniversario, 
-      telefone, 
-      isSuperior, 
-      token, 
-      avatar, 
-      parametroId, 
+
+    // Verifique se o usuário está autenticado
+    if (!isAuthenticated()) {
+      toast.error('Usuário não autenticado');
+      return false;
+    }
+
+    const {
+      login,
+      status,
+      nome,
+      email,
+      superiorId,
+      senha,
+      aniversario,
+      telefone,
+      isSuperior,
+      token,
+      avatar,
+      parametroId,
       filialId } = formData;
 
     const variables = {
@@ -122,7 +129,17 @@ export const useNovoUsuario = () => {
     } catch (err: any) {
       console.error("Erro ao criar usuário:", err);
 
-      toast.error(err.response?.errors?.[0]?.message || 'Erro ao criar usuário');
+      // Verificar se a resposta contém "Unauthorized"
+      if (err.response?.errors?.[0]?.message === 'Unauthorized') {
+        // Limpar o localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('id');
+
+        // Redirecionar para a tela de login
+        navigate('/');
+      } else {
+        toast.error(err.response?.errors?.[0]?.message || 'Erro ao criar usuário');
+      }
       return false;
     } finally {
       setLoading(false);
