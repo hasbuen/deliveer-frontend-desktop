@@ -1,10 +1,15 @@
-// src/utils/auth.ts
-export const isAuthenticated = (): boolean => {
-    const token = localStorage.getItem('token');
-    // Verifique se o token existe e se é válido, você pode adicionar validações adicionais aqui
-    return !!token;
-  };
-  
-  export const getToken = (): string | null => {
-    return localStorage.getItem('token');
-  };  
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+export const checkAuthToken = () => {
+  const navigate = useNavigate();
+  console.log("ENTROU")
+
+  localStorage.removeItem('token');
+
+  // Redireciona o usuário para a tela de login
+  navigate('/');
+
+  // Mostra uma notificação de sessão expirada
+  toast.error("Sessão expirada, faça login novamente.");
+};

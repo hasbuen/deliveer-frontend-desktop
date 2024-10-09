@@ -4,28 +4,8 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
 
-// Interface para o usuário essencial
-interface Usuario {
-  login: string;
-  nome: string;
-  email: string;
-  superiorId: string;
-  senha: string;
-  aniversario: Date;
-  telefone: string;
-  isSuperior: boolean;
-  token: string | null; // Permite null
-  avatar: string | null; // Permite null
-  parametroId: string | null; // Permite null
-  filialId: string | null; // Permite null
-}
-
 interface BuscaUsuarioResposta {
   buscaUsuario: { id: string };
-}
-
-interface EditaUsuarioResposta {
-  editaUsuario: Usuario;
 }
 
 const EDITA_USUARIO = gql`
@@ -132,7 +112,7 @@ export const useEditaUsuario = () => {
     setLoading(true);
 
     try {
-      const data: EditaUsuarioResposta = await client.request(EDITA_USUARIO, variables);
+      await client.request(EDITA_USUARIO, variables);
       window.location.reload();
       return true;
     } catch (err: any) {
