@@ -163,6 +163,7 @@ const Usuarios: React.FC = () => {
                                     fields={fields}
                                     onSubmit={(data: any) => registraUsuario({
                                         login: data.login,
+                                        status: Number(0),
                                         nome: data.nome,
                                         email: data.email,
                                         superiorId: localStorage.getItem('id')?.toString() ?? "",
@@ -183,20 +184,20 @@ const Usuarios: React.FC = () => {
                                 <h2 className="text-3xl font-bold tracking-tight text-rose-600 py-10">Editar usuários</h2>
                                 <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
                                     <table className="min-w-full divide-y divide-gray-300">
-                                        <thead className="bg-gray-50">
+                                        <thead className="bg-rose-400 text-black">
                                             <tr>
                                                 <th scope="col"></th>
-                                                <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Login</th>
-                                                <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Nome</th>
-                                                <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Email</th>
-                                                <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Telefone</th>
-                                                <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Superior?</th>
-                                                <th scope="col" className="px-4 py-2 text-left text-xs font-medium text-gray-800 uppercase tracking-wider"></th>
+                                                <th scope="col" className="px-4 py-2 text-left text-base font-bold capitalize tracking-wider">Login</th>
+                                                <th scope="col" className="px-4 py-2 text-left text-base font-bold capitalize tracking-wider">Nome</th>
+                                                <th scope="col" className="px-4 py-2 text-left text-base font-bold capitalize tracking-wider">Email</th>
+                                                <th scope="col" className="px-4 py-2 text-left text-base font-bold capitalize tracking-wider">Telefone</th>
+                                                <th scope="col" className="px-4 py-2 text-left text-base font-bold capitalize tracking-wider">Superior?</th>
+                                                <th scope="col"></th>
                                             </tr>
                                         </thead>
-                                        <tbody className="bg-white divide-y divide-gray-200">
+                                        <tbody className="bg-rose-200 divide-y divide-white">
                                             {usuarios.map((usuario) => (
-                                                <tr key={usuario.login}>
+                                                <tr key={usuario.login} className='text-black'>
                                                     <td className="px-4 py-2">
                                                         <img src={`/avatars/${usuario.avatar}`} alt="" className="h-12 w-12 rounded-full" />
                                                     </td>
@@ -204,7 +205,7 @@ const Usuarios: React.FC = () => {
                                                     <td className="px-4 py-2">{usuario.nome}</td>
                                                     <td className="px-4 py-2">{usuario.email}</td>
                                                     <td className="px-4 py-2">{usuario.telefone}</td>
-                                                    <td className="px-4 py-2">{usuario.isSuperior}</td>
+                                                    <td className="px-4 py-2">{usuario.isSuperior ? 'Sim' : 'Não'}</td>
                                                     <td className="px-4 py-2">
                                                         <button
                                                             onClick={() => abrirAtualizaModal(usuario)}
@@ -240,9 +241,9 @@ const Usuarios: React.FC = () => {
                             })}
                         />
                         <button
-                            className="mt-4 bg-transparent text-gray-950 py-2 px-4"
+                            className="mt-4 ml-32 bg-gray-300 hover:bg-gray-400 text-rose-500 hover:text-rose-800 py-1 px-4 rounded-md shadow-sm mx-auto"
                             onClick={fecharAtualizaModal}>
-                            Cancelar edição!
+                            Cancelar edição?
                         </button>
                     </div>
                 </div>

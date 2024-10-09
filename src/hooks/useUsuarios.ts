@@ -52,6 +52,7 @@ const TODOS_USUARIOS = gql`
 const NOVO_USUARIO = gql`
 mutation novoUsuario(
   $login: String!,
+  $status: Int!,
   $nome: String!,
   $email: String!,
   $superiorId: String!,
@@ -66,6 +67,7 @@ mutation novoUsuario(
 ) {
   novoUsuario(
     login: $login,
+    status: $status,
     nome: $nome,
     email: $email,
     superiorId: $superiorId,
@@ -79,6 +81,7 @@ mutation novoUsuario(
     filialId: $filialId
   ) {
         login
+        status
         nome
         email
         superiorId
@@ -167,10 +170,24 @@ export const useUsuarios = () => {
   };
 
   const novoUsuario = async (formData: { [key: string]: any }) => {
-    const { login, nome, email, superiorId, senha, aniversario, telefone, isSuperior, token, avatar, parametroId, filialId } = formData;
+    const { 
+      login, 
+      status, 
+      nome, 
+      email, 
+      superiorId, 
+      senha, 
+      aniversario, 
+      telefone, 
+      isSuperior, 
+      token, 
+      avatar, 
+      parametroId, 
+      filialId } = formData;
 
     const variables = {
       login,
+      status,
       nome,
       email,
       superiorId,
@@ -181,7 +198,7 @@ export const useUsuarios = () => {
       token,
       avatar,
       parametroId,
-      filialId,
+      filialId
     };
 
     setLoading(true)

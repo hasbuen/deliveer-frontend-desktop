@@ -9,7 +9,8 @@ const client = new GraphQLClient('http://148.113.204.23:3000/graphql');
 // Interface para o usuário essencial
 interface Usuario {
   id: string;         // ID do usuário
-  login: string;      // Login do usuário
+  login: string; 
+  status: string;     // Login do usuário
   nome: string;       // Nome do usuário
   isSuperior: boolean; // Indica se o usuário é superior
   avatar: string;
@@ -37,6 +38,7 @@ const LOGIN = gql`
       usuario {
         id
         login
+        status
         nome
         avatar
         isSuperior
@@ -69,6 +71,7 @@ export const useLogin = () => {
       if (data.login) {
         localStorage.setItem('id', data.login.usuario.id);
         localStorage.setItem('login', data.login.usuario.login);
+        localStorage.setItem('status', data.login.usuario.status);
         localStorage.setItem('avatar', data.login.usuario.avatar);
         localStorage.setItem('token', data.login.access_token);
         toast.success(`Bem-vindo(a), ${data.login.usuario.login}!`);

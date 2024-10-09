@@ -26,12 +26,19 @@ const Navbar: React.FC<NavbarProps> = ({ avatar, login, logout }) => {
                 )}
             </div>
             <div className="flex items-center">
+                <div className="flex items-center">
+                    <span className="relative top-4 -right-9 inline-flex items-center justify-center h-4 w-4 rounded-full bg-green-600 text-white text-xs">
+                        {status}
+                    </span>
+                </div>
                 <img
                     src={`/avatars/${avatar}`}
                     alt="Avatar"
                     className="h-8 w-8 rounded-full mr-2"
                 />
+
                 <h1 className="text-xl font-bold">{login}</h1>
+
             </div>
             <div className="flex items-center">
 
