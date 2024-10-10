@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useEditaUsuario } from "./hook/useEditaUsuario";
 import { useTodosUsuarios } from "../Todos/hook/useTodosUsuarios";
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
-import Formulario from '../../../commons/Formulario/Formulario';
+import Formulario from '../Formulario';
 
 interface Usuario {
     login: string;
@@ -54,8 +54,8 @@ const EditaUsuario: React.FC = () => {
         try {
             await editaUsuario(formData);
             fecharAtualizaModal();
-            setUsuarios(prev => 
-                prev.map(usuario => 
+            setUsuarios(prev =>
+                prev.map(usuario =>
                     usuario.login === formData.login ? { ...usuario, ...formData } : usuario
                 )
             );
@@ -72,11 +72,11 @@ const EditaUsuario: React.FC = () => {
                     <thead className="bg-rose-400 text-black">
                         <tr>
                             <th scope="col"></th>
-                            <th scope="col" className="px-4 py-2 text-left text-base font-bold capitalize tracking-wider">Login</th>
-                            <th scope="col" className="px-4 py-2 text-left text-base font-bold capitalize tracking-wider">Nome</th>
-                            <th scope="col" className="px-4 py-2 text-left text-base font-bold capitalize tracking-wider">Email</th>
-                            <th scope="col" className="px-4 py-2 text-left text-base font-bold capitalize tracking-wider">Telefone</th>
-                            <th scope="col" className="px-4 py-2 text-left text-base font-bold capitalize tracking-wider">Superior?</th>
+                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Login</th>
+                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Nome</th>
+                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Email</th>
+                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Telefone</th>
+                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Superior?</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
@@ -110,13 +110,20 @@ const EditaUsuario: React.FC = () => {
 
             {isModalOpen && usuarioSelecionado && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+                    <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
+                        {/* Botão Circular Vermelho */}
+                        <button
+                            onClick={fecharAtualizaModal}
+                            className="absolute top-4 right-4 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                            title="Fechar sem salvar!"
+                        />
                         <Formulario
                             name={`Atualização`}
                             fields={[
-                                { label: 'Nome', name: 'nome', type: 'text' },
-                                { label: 'Email', name: 'email', type: 'email' },
-                                { label: 'Telefone', name: 'telefone', type: 'tel' },
+                                { label: 'Nome', name: 'nome', value: usuarioSelecionado.nome, type: 'text' },
+                                { label: 'Email', name: 'email', value: usuarioSelecionado.email, type: 'email' },
+                                { label: 'Telefone', name: 'telefone', value: usuarioSelecionado.telefone, type: 'tel' },
+                                { label: 'Superior', name: 'isSuperior', valueBool: usuarioSelecionado.isSuperior, type: 'checkbox' },
                             ]}
                             onSubmit={(data: any) => atualizaUsuario({
                                 ...usuarioSelecionado,
@@ -124,12 +131,8 @@ const EditaUsuario: React.FC = () => {
                                 email: data.email,
                                 telefone: data.telefone,
                             })}
+                            initialData={usuarioSelecionado}
                         />
-                        <button
-                            className="mt-4 ml-32 bg-gray-300 hover:bg-gray-400 text-rose-500 hover:text-rose-800 py-1 px-4 rounded-md shadow-sm mx-auto"
-                            onClick={fecharAtualizaModal}>
-                            Cancelar edição?
-                        </button>
                     </div>
                 </div>
             )}

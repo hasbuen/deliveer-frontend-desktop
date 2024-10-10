@@ -3,21 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 import SidebarMenu from '../../components/SidebarMenu/SidebarMenu';
-import { UserGroupIcon, UserPlusIcon, PencilSquareIcon, UserMinusIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { UserGroupIcon, NewspaperIcon, UserPlusIcon, PencilSquareIcon, UserMinusIcon, EyeIcon } from '@heroicons/react/24/outline';
 import TodosUsuarios from './Todos/TodosUsuarios'; 
 import NovoUsuario from './Novo/NovoUsuario'; // Importando NovoUsuario
 import EditaUsuario from './Editar/EditaUsuario'; // Importando EditaUsuario
 import ApagaUsuario from './Apagar/ApagaUsuario'; // Importando ApagaUsuario
 import MonitorarUsuario from './Monitorar/MonitorarUsuario'; // Importando MonitorarUsuario
-
-interface Usuario {
-    login: string;
-    nome: string;
-    email: string;
-    telefone: string;
-    avatar: string;
-    isSuperior: string;
-}
 
 const Usuarios: React.FC = () => {
     const [avatar, setAvatar] = useState<string>("");
@@ -45,6 +36,7 @@ const Usuarios: React.FC = () => {
     };
 
     const menuItems = [
+        { name: 'Todos', href: '/usuarios', icon: NewspaperIcon },
         { name: 'Novo', href: '/usuarios/novo', icon: UserPlusIcon },
         { name: 'Editar', href: '/usuarios/editar', icon: PencilSquareIcon },
         { name: 'Apagar', href: '/usuarios/apagar', icon: UserMinusIcon },
