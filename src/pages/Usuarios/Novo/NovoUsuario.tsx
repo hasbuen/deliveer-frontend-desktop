@@ -25,7 +25,7 @@ const NovoUsuario: React.FC = () => {
         { label: 'CEP', name: 'cep', type: 'text' },
         { label: 'Logradouro', name: 'logradouro', type: 'text' },
         { label: 'Bairro', name: 'bairro', type: 'text' },
-        { label: 'Localidade', name: 'Localidade', type: 'text' },
+        { label: 'Localidade', name: 'localidade', type: 'text' },
         { label: 'UF', name: 'uf', type: 'text' },
         { label: 'IBGE', name: 'ibge', type: 'text' },
         { label: 'Avatar', name: 'avatar', type: 'file' }

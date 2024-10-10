@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/outline';
+import { AdjustmentsHorizontalIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { cepSearch } from '../../utils/cepSearch';
 
 interface Field {
     label: string;
@@ -92,6 +93,28 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
         });
     };
 
+    const handleCepKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const cep = formData['cep'];
+            if (cep) {
+                try {
+                    const usuario = await cepSearch(cep);
+                    setFormData(prevState => ({
+                        ...prevState,
+                        logradouro: usuario.logradouro,
+                        bairro: usuario.bairro,
+                        localidade: usuario.localidade,
+                        uf: usuario.uf,
+                        ibge: usuario.ibge
+                    }));
+                } catch (error) {
+                    console.error('Erro ao buscar CEP:', error);
+                }
+            }
+        }
+    };
+
     return (
         <form onSubmit={handleSubmit}>
             <h2 className="col-span-1 sm:col-span-2 text-4xl font-bold text-rose-600 mb-4">{name}</h2>
@@ -149,6 +172,19 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                                         />
                                     </div>
                                 ))}
+                            </div>
+                        ) : field.name === 'cep' ? (
+                            <div className="relative">
+                                <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-black" aria-hidden="true" />
+                                <input
+                                    type="text"
+                                    name="cep"
+                                    value={formData['cep'] || ''}
+                                    onChange={handleChange}
+                                    onKeyDown={handleCepKeyDown}
+                                    className="mt-1 block w-full rounded-lg p-2 pl-10 border-0 shadow-rose-800 shadow-lg bg-rose-200 text-black ring-1 ring-inset ring-rose-600 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-rose-800"
+                                    placeholder="Digite o CEP"
+                                />
                             </div>
                         ) : field.type !== 'checkbox' && (
                             <input
