@@ -5,7 +5,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
 
-// Interface para o usuário essencial
 interface Usuario {
   login: String;
   status: number;
@@ -16,6 +15,12 @@ interface Usuario {
   aniversario: Date;
   telefone: String;
   isSuperior: boolean;
+  cep: String | null;
+  logradouro: String | null;
+  bairro: String | null;
+  localidade: String | null;
+  uf: String | null;
+  ibge: String | null;
   token: string | null;
   avatar: string | null;
   parametroId: string | null;
@@ -37,6 +42,12 @@ mutation novoUsuario(
   $aniversario: String!,
   $telefone: String!,
   $isSuperior: Boolean!,
+  $cep: String,
+  $logradouro: String,
+  $bairro: String,
+  $localidade: String,
+  $uf: String,
+  $ibge: String,
   $token: String,
   $avatar: String,
   $parametroId: String,
@@ -52,6 +63,12 @@ mutation novoUsuario(
     aniversario: $aniversario,
     telefone: $telefone,
     isSuperior: $isSuperior,
+    cep: $cep,
+    logradouro: $logradouro,
+    bairro: $bairro,
+    localidade: $localidade,
+    uf: $uf,
+    ibge: $ibge,
     token: $token,
     avatar: $avatar,
     parametroId: $parametroId,
@@ -93,6 +110,12 @@ export const useNovoUsuario = () => {
       aniversario,
       telefone,
       isSuperior,
+      cep,
+      logradouro,
+      bairro,
+      localidade,
+      uf,
+      ibge,
       token,
       avatar,
       parametroId,
@@ -108,6 +131,12 @@ export const useNovoUsuario = () => {
       aniversario,
       telefone,
       isSuperior,
+      cep,
+      logradouro,
+      bairro,
+      localidade,
+      uf,
+      ibge,
       token,
       avatar,
       parametroId,
