@@ -76,23 +76,6 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
         });
     };
 
-    const toggleTodasPermissoes = (index: number) => {
-        setPermissoes(prevPermissoes => {
-            const novasPermissoes = [...prevPermissoes];
-            const todasSelecionadas = novasPermissoes[index].criar && novasPermissoes[index].editar && novasPermissoes[index].apagar && novasPermissoes[index].visualizar;
-
-            novasPermissoes[index] = {
-                tela: novasPermissoes[index].tela,
-                criar: !todasSelecionadas,
-                editar: !todasSelecionadas,
-                apagar: !todasSelecionadas,
-                visualizar: !todasSelecionadas,
-            } as Permissao;
-
-            return novasPermissoes;
-        });
-    };
-
     const handleCepKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -182,7 +165,7 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                                     value={formData['cep'] || ''}
                                     onChange={handleChange}
                                     onKeyDown={handleCepKeyDown}
-                                    className="mt-1 block w-full rounded-lg p-2 pl-10 border-0 shadow-rose-800 shadow-lg bg-rose-200 text-black ring-1 ring-inset ring-rose-600 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-rose-800"
+                                    className="mt-1 block w-full rounded-lg p-2 pl-10 border-0 shadow-rose-800 shadow-sm bg-rose-200 text-black ring-1 ring-inset ring-rose-600 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-rose-800"
                                     placeholder="Digite o CEP"
                                 />
                             </div>
