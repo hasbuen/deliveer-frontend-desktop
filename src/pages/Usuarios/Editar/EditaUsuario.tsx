@@ -10,7 +10,13 @@ interface Usuario {
     email: string;
     telefone: string;
     avatar: string;
-    isSuperior: boolean; // Mudança para booleano
+    isSuperior: boolean;
+    cep: string;
+    logradouro: string;
+    numero: string;
+    localidade: string;
+    uf: string;
+    ibge: string;
 }
 
 const EditaUsuario: React.FC = () => {
@@ -30,7 +36,13 @@ const EditaUsuario: React.FC = () => {
                     email: usuario.email,
                     telefone: usuario.telefone,
                     avatar: usuario.avatar,
-                    isSuperior: usuario.isSuperior
+                    isSuperior: usuario.isSuperior,
+                    cep: usuario.cep,
+                    logradouro: usuario.logradouro,
+                    numero: usuario.numero,
+                    localidade: usuario.localidade,
+                    uf: usuario.uf,
+                    ibge: usuario.ibge
                 }));
                 setUsuarios(mapeiaUsuarios);
             } catch (error) {
@@ -124,12 +136,24 @@ const EditaUsuario: React.FC = () => {
                                 { label: 'Email', name: 'email', value: usuarioSelecionado.email, type: 'email' },
                                 { label: 'Telefone', name: 'telefone', value: usuarioSelecionado.telefone, type: 'tel' },
                                 { label: 'Superior', name: 'isSuperior', valueBool: usuarioSelecionado.isSuperior, type: 'checkbox' },
+                                { label: 'CEP', name: 'cep', value: usuarioSelecionado.cep, type: 'text' },
+                                { label: 'Logradouro', name: 'logradouro', value: usuarioSelecionado.logradouro, type: 'text' },
+                                { label: 'Numero', name: 'numero', value: usuarioSelecionado.numero, type: 'text' },
+                                { label: 'localidade', name: 'localidade', value: usuarioSelecionado.localidade, type: 'text' },
+                                { label: 'UF', name: 'uf', value: usuarioSelecionado.uf, type: 'text' },
+                                { label: 'IBGE', name: 'ibge', value: usuarioSelecionado.ibge, type: 'text' },
                             ]}
                             onSubmit={(data: any) => atualizaUsuario({
                                 ...usuarioSelecionado,
                                 nome: data.nome,
                                 email: data.email,
                                 telefone: data.telefone,
+                                cep: data.cep,
+                                logradouro: data.logradouro,
+                                numero: data.numero,
+                                localidade: data.localidade,
+                                uf: data.uf,
+                                ibge: data.ibge
                             })}
                             initialData={usuarioSelecionado}
                         />
