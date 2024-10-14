@@ -17,6 +17,7 @@ interface Usuario {
   isSuperior: boolean;
   cep: String | null;
   logradouro: String | null;
+  numero: String | null;
   bairro: String | null;
   localidade: String | null;
   uf: String | null;
@@ -44,6 +45,7 @@ mutation novoUsuario(
   $isSuperior: Boolean!,
   $cep: String,
   $logradouro: String,
+  $numero: String,
   $bairro: String,
   $localidade: String,
   $uf: String,
@@ -65,6 +67,7 @@ mutation novoUsuario(
     isSuperior: $isSuperior,
     cep: $cep,
     logradouro: $logradouro,
+    numero: $numero,
     bairro: $bairro,
     localidade: $localidade,
     uf: $uf,
@@ -112,6 +115,7 @@ export const useNovoUsuario = () => {
       isSuperior,
       cep,
       logradouro,
+      numero,
       bairro,
       localidade,
       uf,
@@ -133,6 +137,7 @@ export const useNovoUsuario = () => {
       isSuperior,
       cep,
       logradouro,
+      numero,
       bairro,
       localidade,
       uf,

@@ -24,6 +24,7 @@ const NovoUsuario: React.FC = () => {
         { label: 'Aniversário', name: 'aniversario', type: 'date' },
         { label: 'CEP', name: 'cep', type: 'text' },
         { label: 'Logradouro', name: 'logradouro', type: 'text' },
+        { label: 'Numero', name: 'numero', type: 'text' },
         { label: 'Bairro', name: 'bairro', type: 'text' },
         { label: 'Localidade', name: 'localidade', type: 'text' },
         { label: 'UF', name: 'uf', type: 'text' },
