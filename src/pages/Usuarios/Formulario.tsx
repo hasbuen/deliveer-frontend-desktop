@@ -203,6 +203,19 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                                     </div>
                                 ))}
                             </div>
+                        ) : field.name === 'cep' ? (
+                            <div className="relative">
+                                <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-black" aria-hidden="true" />
+                                <input
+                                    type="text"
+                                    name={field.name}
+                                    value={formData['cep'] || ''}
+                                    onChange={handleChange}
+                                    onKeyDown={handleCepKeyDown}
+                                    className="mt-1 block w-full rounded-lg p-2 pl-10 border-0 shadow-rose-800 shadow-sm bg-rose-200 text-black ring-1 ring-inset ring-rose-600 placeholder:text-gray-500 focus:ring-2 focus:ring-inset focus:ring-rose-800"
+                                    placeholder="Digite o CEP"
+                                />
+                            </div>
                         ) : field.type !== 'checkbox' && (
                             <input
                                 type={field.type}
@@ -228,7 +241,6 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
             {isModalOpen && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
-                        {/* Botão Circular Vermelho */}
                         <button
                             onClick={fecharModalPermissoes}
                             className="absolute top-4 right-4 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"

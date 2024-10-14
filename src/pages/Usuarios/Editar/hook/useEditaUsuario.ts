@@ -18,6 +18,13 @@ const EDITA_USUARIO = gql`
     $aniversario: String,
     $telefone: String,
     $isSuperior: Boolean,
+    cep: String,
+    logradouro: String,
+    numero: String,
+    bairro: String,
+    localidade: String,
+    uf: String,
+    ibge: String,
     $token: String,
     $avatar: String,
     $parametroId: String,
@@ -32,6 +39,13 @@ const EDITA_USUARIO = gql`
       aniversario: $aniversario,
       telefone: $telefone,
       isSuperior: $isSuperior,
+      cep: $cep,
+      logradouro: $logradouro,
+      numero: $numero,
+      bairro: $bairro,
+      localidade: $localidade,
+      uf: $uf,
+      ibge: $ibge,
       token: $token,
       avatar: $avatar,
       parametroId: $parametroId,
@@ -43,6 +57,13 @@ const EDITA_USUARIO = gql`
       aniversario
       telefone
       isSuperior
+      cep
+      logradouro
+      numero
+      bairro
+      localidade
+      uf
+      ibge
       token
       avatar
       parametroId
@@ -59,9 +80,27 @@ export const useEditaUsuario = () => {
 
   const editaUsuario = async (formData: { [key: string]: any }) => {
 
-    const { login, nome, email, superiorId, senha, aniversario, telefone, isSuperior, token, avatar, parametroId, filialId } = formData;
+    const {
+      login,
+      nome,
+      email,
+      superiorId,
+      senha,
+      aniversario,
+      telefone,
+      isSuperior,
+      cep,
+      logradouro,
+      numero,
+      bairro,
+      localidade,
+      uf,
+      ibge,
+      token,
+      avatar,
+      parametroId,
+      filialId } = formData;
 
-    // 1. Primeiro, busque o ID do usuário pelo login
     let usuarioId: string;
 
     try {
@@ -78,14 +117,10 @@ export const useEditaUsuario = () => {
       usuarioId = response.buscaUsuario.id;
     } catch (err: any) {
       console.error("Erro ao buscar usuário:", err);
-
-      // Verificar se a resposta contém "Unauthorized"
       if (err.response?.errors?.[0]?.message === 'Unauthorized') {
-        // Limpar o localStorage
         localStorage.removeItem('token');
         localStorage.removeItem('id');
         toast.warning("Sessão expirada, faça o login novamente!");
-        // Redirecionar para a tela de login
         navigate('/');
       } else {
         toast.error(err.response?.errors?.[0]?.message || 'Erro ao editar usuários');
@@ -93,7 +128,6 @@ export const useEditaUsuario = () => {
       return false;
     }
 
-    // 2. Agora, faça a atualização dos dados do usuário
     const variables = {
       id: usuarioId,
       nome: nome || null,
@@ -103,6 +137,13 @@ export const useEditaUsuario = () => {
       aniversario: aniversario || null,
       telefone: telefone || null,
       isSuperior: isSuperior !== undefined ? isSuperior : false,
+      cep: cep || null,
+      logradouro: logradouro || null,
+      numero: numero || null,
+      bairro: bairro || null,
+      localidade: localidade || null,
+      uf: uf || null,
+      ibge: ibge || null,
       token: token || null,
       avatar: avatar || null,
       parametroId: parametroId || null,

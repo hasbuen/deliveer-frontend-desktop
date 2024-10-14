@@ -9,7 +9,6 @@ interface Usuario {
     nome: string;
     email: string;
     telefone: string;
-    avatar: string;
     isSuperior: boolean;
     cep: string;
     logradouro: string;
@@ -17,6 +16,7 @@ interface Usuario {
     localidade: string;
     uf: string;
     ibge: string;
+    avatar: string;
 }
 
 const EditaUsuario: React.FC = () => {
@@ -35,14 +35,14 @@ const EditaUsuario: React.FC = () => {
                     nome: usuario.nome,
                     email: usuario.email,
                     telefone: usuario.telefone,
-                    avatar: usuario.avatar,
                     isSuperior: usuario.isSuperior,
                     cep: usuario.cep,
                     logradouro: usuario.logradouro,
                     numero: usuario.numero,
                     localidade: usuario.localidade,
                     uf: usuario.uf,
-                    ibge: usuario.ibge
+                    ibge: usuario.ibge,
+                    avatar: usuario.avatar
                 }));
                 setUsuarios(mapeiaUsuarios);
             } catch (error) {
@@ -93,7 +93,7 @@ const EditaUsuario: React.FC = () => {
                         </tr>
                     </thead>
                 </table>
-                <div className="overflow-y-auto h-96"> {/* Adicionando o scroll no contêiner do tbody */}
+                <div className="overflow-y-auto h-96"> 
                     <table className="min-w-full divide-y divide-gray-300">
                         <tbody className="bg-rose-200 divide-y divide-white">
                             {usuarios.map(usuario => (
@@ -123,7 +123,6 @@ const EditaUsuario: React.FC = () => {
             {isModalOpen && usuarioSelecionado && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
-                        {/* Botão Circular Vermelho */}
                         <button
                             onClick={fecharAtualizaModal}
                             className="absolute top-4 right-4 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
@@ -142,6 +141,7 @@ const EditaUsuario: React.FC = () => {
                                 { label: 'localidade', name: 'localidade', value: usuarioSelecionado.localidade, type: 'text' },
                                 { label: 'UF', name: 'uf', value: usuarioSelecionado.uf, type: 'text' },
                                 { label: 'IBGE', name: 'ibge', value: usuarioSelecionado.ibge, type: 'text' },
+                                { label: 'Avatar', name: 'avatar', value: usuarioSelecionado.avatar, type: 'file' }
                             ]}
                             onSubmit={(data: any) => atualizaUsuario({
                                 ...usuarioSelecionado,

@@ -4,8 +4,6 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
 
-
-// Interface para o usuário essencial
 interface Usuario {
   login: string;
   nome: string;
@@ -15,6 +13,13 @@ interface Usuario {
   aniversario: Date;
   telefone: string;
   isSuperior: boolean;
+  cep: String | null;
+  logradouro: String | null;
+  numero: String | null;
+  bairro: String | null;
+  localidade: String | null;
+  uf: String | null;
+  ibge: String | null;
   token: string | null;
   avatar: string | null;
   parametroId: string | null;
@@ -33,6 +38,13 @@ const TODOS_USUARIOS = gql`
       nome
       email
       telefone
+      cep
+      logradouro
+      numero
+      bairro
+      localidade
+      uf
+      ibge
       avatar
       isSuperior
     }
