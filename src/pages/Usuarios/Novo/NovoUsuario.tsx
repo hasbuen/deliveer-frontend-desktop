@@ -12,7 +12,6 @@ const NovoUsuario: React.FC = () => {
     };
 
     const fields = [
-       
         { label: 'Superior', name: 'isSuperior', type: 'checkbox' },
         { label: 'Filial', name: 'filial', type: 'text' },
         { label: 'Login', name: 'login', type: 'text' },
