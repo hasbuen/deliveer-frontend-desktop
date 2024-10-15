@@ -10,7 +10,16 @@ import { ToastContainer } from "react-toastify";
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Router>
-      <ToastContainer />
+    <ToastContainer
+        position="bottom-center"
+        autoClose={5000} 
+        hideProgressBar={false} 
+        newestOnTop={false}
+        closeOnClick 
+        pauseOnHover 
+        draggable 
+        theme="colored" 
+      />
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
