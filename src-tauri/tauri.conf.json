@@ -19,13 +19,16 @@
     },
     "windows": [
       {
-        "title": "deliveer",
+        "fullscreen": false,
+        "maximized": true,
+        "resizable": true,
+        "title": "DeliVeer",
         "width": 800,
         "height": 600
       }
     ],
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; script-src 'self' https://trusted-source.com; style-src 'self' 'unsafe-inline'"
     },
     "bundle": {
       "active": true,
