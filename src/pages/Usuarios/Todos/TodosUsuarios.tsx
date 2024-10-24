@@ -83,7 +83,7 @@ const TodosUsuarios: React.FC = () => {
                                                     {`${usuario.cep} ${usuario.logradouro} ${usuario.numero} ${usuario.localidade} ${usuario.uf}`}
                                                 </span>
                                             ) : (
-                                                "Não foi informado o endereço no cadastro"
+                                                "Não foi informado o endereço no cadastro deste usuário!"
                                             )}
                                         </p>
                                     </Tooltip>
