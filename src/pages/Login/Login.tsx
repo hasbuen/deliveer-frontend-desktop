@@ -70,7 +70,7 @@ function Login() {
                 value={login}
                 onChange={(e) => setLogin(e.target.value)}
                 required
-                className="block w-full rounded-lg p-2.5 border-0 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-fuchsia-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-lg p-2.5 border-0 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-rose-600 sm:text-sm sm:leading-6"
               />
             </div>
           </div>
@@ -147,7 +147,7 @@ function Login() {
                     type="password"
                     value={senhaSuperior}
                     onChange={(e) => setSenhaSuperior(e.target.value)}
-                    className="block w-full rounded-lg p-2.5 border-0 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-fuchsia-600 sm:text-sm sm:leading-6"
+                    className="block w-full rounded-lg p-2.5 border-0 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-rose-600 sm:text-sm sm:leading-6"
                     required
                   />
                 </div>
@@ -171,7 +171,7 @@ function Login() {
                     type="password"
                     value={confirmaSenha}
                     onChange={(e) => setConfirmaSenha(e.target.value)}
-                    className="block w-full rounded-lg p-2.5 border-0 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-fuchsia-600 sm:text-sm sm:leading-6"
+                    className="block w-full rounded-lg p-2.5 border-0 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-rose-600 sm:text-sm sm:leading-6"
                     required
                   />
                 </div>
