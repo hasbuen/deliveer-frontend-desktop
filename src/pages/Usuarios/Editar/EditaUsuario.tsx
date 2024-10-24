@@ -93,7 +93,7 @@ const EditaUsuario: React.FC = () => {
                         </tr>
                     </thead>
                 </table>
-                <div className="overflow-y-auto h-96"> 
+                <div className="overflow-y-auto h-auto"> 
                     <table className="min-w-full divide-y divide-gray-300">
                         <tbody className="bg-rose-200 divide-y divide-white">
                             {usuarios.map(usuario => (

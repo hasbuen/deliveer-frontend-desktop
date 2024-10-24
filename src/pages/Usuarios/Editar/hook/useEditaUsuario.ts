@@ -79,7 +79,6 @@ export const useEditaUsuario = () => {
   const client = getGraphQLClient();
 
   const editaUsuario = async (formData: { [key: string]: any }) => {
-
     const {
       login,
       nome,
