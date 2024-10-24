@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useEditaUsuario } from "./hook/useEditaUsuario";
 import { useTodosUsuarios } from "../Todos/hook/useTodosUsuarios";
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
+import { CheckIcon, XMarkIcon } from '@heroicons/react/24/solid';
+
 import Formulario from '../Formulario';
 
 interface Usuario {
@@ -95,7 +97,7 @@ const EditaUsuario: React.FC = () => {
                 </table>
                 <div className="overflow-y-auto h-auto"> 
                     <table className="min-w-full divide-y divide-gray-300">
-                        <tbody className="bg-rose-200 divide-y divide-white">
+                        <tbody className="bg-pink-200">
                             {usuarios.map(usuario => (
                                 <tr key={usuario.login} className='text-black'>
                                     <td className="px-4 py-2">
@@ -105,7 +107,9 @@ const EditaUsuario: React.FC = () => {
                                     <td className="px-4 py-2">{usuario.nome}</td>
                                     <td className="px-4 py-2">{usuario.email}</td>
                                     <td className="px-4 py-2">{usuario.telefone}</td>
-                                    <td className="px-4 py-2">{usuario.isSuperior ? 'Sim' : 'Não'}</td>
+                                    
+                                    <td className="px-4 py-2">{usuario.isSuperior ? <CheckIcon className="h-6 w-6 text-green-500 font-bold"/> : <XMarkIcon className="h-6 w-6 text-red-500 font-bold"/>}</td>
+
                                     <td className="px-4 py-2">
                                         <button
                                             onClick={() => abrirAtualizaModal(usuario)}
