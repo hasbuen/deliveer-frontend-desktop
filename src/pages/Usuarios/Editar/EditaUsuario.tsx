@@ -3,6 +3,7 @@ import { useEditaUsuario } from "./hook/useEditaUsuario";
 import { useTodosUsuarios } from "../Todos/hook/useTodosUsuarios";
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { toast } from 'react-toastify';
 
 import Formulario from '../Formulario';
 
@@ -48,7 +49,7 @@ const EditaUsuario: React.FC = () => {
                 }));
                 setUsuarios(mapeiaUsuarios);
             } catch (error) {
-                console.error("Erro ao carregar os usuários", error);
+                toast.error("Erro ao carregar usuários!");
             }
         };
         carregarUsuarios();
@@ -74,7 +75,7 @@ const EditaUsuario: React.FC = () => {
                 )
             );
         } catch (error) {
-            console.error("Erro ao atualizar usuário", error);
+            toast.error("Erro ao atualizar usuário!");
         }
     };
 

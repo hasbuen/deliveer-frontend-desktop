@@ -18,13 +18,13 @@ const EDITA_USUARIO = gql`
     $aniversario: String,
     $telefone: String,
     $isSuperior: Boolean,
-    cep: String,
-    logradouro: String,
-    numero: String,
-    bairro: String,
-    localidade: String,
-    uf: String,
-    ibge: String,
+    $cep: String,
+    $logradouro: String,
+    $numero: String,
+    $bairro: String,
+    $localidade: String,
+    $uf: String,
+    $ibge: String,
     $token: String,
     $avatar: String,
     $parametroId: String,
@@ -115,14 +115,13 @@ export const useEditaUsuario = () => {
       );
       usuarioId = response.buscaUsuario.id;
     } catch (err: any) {
-      console.error("Erro ao buscar usuário:", err);
       if (err.response?.errors?.[0]?.message === 'Unauthorized') {
         localStorage.removeItem('token');
         localStorage.removeItem('id');
         toast.warning("Sessão expirada, faça o login novamente!");
         navigate('/');
       } else {
-        toast.error(err.response?.errors?.[0]?.message || 'Erro ao editar usuários');
+        toast.error(err.response?.errors?.[0]?.message || 'Usuário inexistente!');
       }
       return false;
     }
@@ -153,17 +152,12 @@ export const useEditaUsuario = () => {
 
     try {
       await client.request(EDITA_USUARIO, variables);
-      window.location.reload();
       return true;
     } catch (err: any) {
-      console.error("Erro ao editar usuário:", err);
-
-
-      toast.error(err.response?.errors?.[0]?.message || 'Erro ao editar usuário');
-
-
+      toast.error(err.response?.errors?.[0]?.message || 'Erro ao editar usuário!');
       return false;
     } finally {
+      toast.success(`Usuário ${nome} atualizado!`);
       setLoading(false);
     }
   };
