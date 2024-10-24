@@ -108,9 +108,7 @@ const EditaUsuario: React.FC = () => {
                                     <td className="px-4 py-2">{usuario.nome}</td>
                                     <td className="px-4 py-2">{usuario.email}</td>
                                     <td className="px-4 py-2">{usuario.telefone}</td>
-                                    
                                     <td className="px-4 py-2">{usuario.isSuperior ? <CheckIcon className="h-6 w-6 text-green-500 font-bold"/> : <XMarkIcon className="h-6 w-6 text-red-500 font-bold"/>}</td>
-
                                     <td className="px-4 py-2">
                                         <button
                                             onClick={() => abrirAtualizaModal(usuario)}
