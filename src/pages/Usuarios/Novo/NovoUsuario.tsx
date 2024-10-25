@@ -4,11 +4,13 @@ import { useNovoUsuario } from "./hook/useNovoUsuario";
 
 const NovoUsuario: React.FC = () => {
     const { novoUsuario } = useNovoUsuario();
+    
 
-    const registraUsuario = (formData: { [key: string]: any }) => {
-        const status = 0; 
+    const registraUsuario = async (formData: { [key: string]: any }) => {
+        const status = 0;
         const superiorId = localStorage.getItem('id')?.toString() ?? "";
-        novoUsuario({ ...formData, status, superiorId });
+
+        await novoUsuario({ ...formData, status, superiorId });
     };
 
     const fields = [
@@ -33,7 +35,7 @@ const NovoUsuario: React.FC = () => {
 
     return (
         <div className="max-w-2xl rounded-md shadow-sm mx-auto">
-            
+
             <Formulario
                 name={"Novo usuário"}
                 fields={fields}

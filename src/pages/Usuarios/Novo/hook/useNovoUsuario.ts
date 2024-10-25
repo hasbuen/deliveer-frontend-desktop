@@ -1,27 +1,29 @@
+// src/pages/Usuarios/hook/useNovoUsuario.tsx
 import { useState } from 'react';
 import { gql } from 'graphql-request';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
+import { useNovoParametro } from './useNovoParametro';
 
 interface Usuario {
-  login: String;
+  id: string;
+  login: string;
   status: number;
-  nome: String;
-  email: String;
-  superiorId: String;
-  senha: String;
+  nome: string;
+  email: string;
+  superiorId: string;
+  senha: string;
   aniversario: Date;
-  telefone: String;
+  telefone: string;
   isSuperior: boolean;
-  cep: String | null;
-  logradouro: String | null;
-  numero: String | null;
-  bairro: String | null;
-  localidade: String | null;
-  uf: String | null;
-  ibge: String | null;
+  cep: string | null;
+  logradouro: string | null;
+  numero: string | null;
+  bairro: string | null;
+  localidade: string | null;
+  uf: string | null;
+  ibge: string | null;
   token: string | null;
   avatar: string | null;
   parametroId: string | null;
@@ -33,76 +35,72 @@ interface NovoUsuarioResposta {
 }
 
 const NOVO_USUARIO = gql`
-mutation novoUsuario(
-  $login: String!,
-  $status: Int!,
-  $nome: String!,
-  $email: String!,
-  $superiorId: String!,
-  $senha: String!,
-  $aniversario: String!,
-  $telefone: String!,
-  $isSuperior: Boolean!,
-  $cep: String,
-  $logradouro: String,
-  $numero: String,
-  $bairro: String,
-  $localidade: String,
-  $uf: String,
-  $ibge: String,
-  $token: String,
-  $avatar: String,
-  $parametroId: String,
-  $filialId: String
-) {
-  novoUsuario(
-    login: $login,
-    status: $status,
-    nome: $nome,
-    email: $email,
-    superiorId: $superiorId,
-    senha: $senha,
-    aniversario: $aniversario,
-    telefone: $telefone,
-    isSuperior: $isSuperior,
-    cep: $cep,
-    logradouro: $logradouro,
-    numero: $numero,
-    bairro: $bairro,
-    localidade: $localidade,
-    uf: $uf,
-    ibge: $ibge,
-    token: $token,
-    avatar: $avatar,
-    parametroId: $parametroId,
-    filialId: $filialId
+  mutation novoUsuario(
+    $login: String!,
+    $status: Int!,
+    $nome: String!,
+    $email: String!,
+    $superiorId: String!,
+    $senha: String!,
+    $aniversario: String!,
+    $telefone: String!,
+    $isSuperior: Boolean!,
+    $cep: String,
+    $logradouro: String,
+    $numero: String,
+    $bairro: String,
+    $localidade: String,
+    $uf: String,
+    $ibge: String,
+    $token: String,
+    $avatar: String,
+    $filialId: String
   ) {
-        login
-        status
-        nome
-        email
-        superiorId
-        senha
-        aniversario
-        telefone
-        isSuperior
-        token
-        avatar
-        parametroId
-        filialId
+    novoUsuario(
+      login: $login,
+      status: $status,
+      nome: $nome,
+      email: $email,
+      superiorId: $superiorId,
+      senha: $senha,
+      aniversario: $aniversario,
+      telefone: $telefone,
+      isSuperior: $isSuperior,
+      cep: $cep,
+      logradouro: $logradouro,
+      numero: $numero,
+      bairro: $bairro,
+      localidade: $localidade,
+      uf: $uf,
+      ibge: $ibge,
+      token: $token,
+      avatar: $avatar,
+      filialId: $filialId
+    ) {
+      id
+      login
+      status
+      nome
+      email
+      superiorId
+      senha
+      aniversario
+      telefone
+      isSuperior
+      token
+      avatar
+      filialId
+    }
   }
-}
 `;
 
 export const useNovoUsuario = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
-
-  // Verifique se o usuário está autenticado
   const client = getGraphQLClient();
+  const { novoParametro } = useNovoParametro();
 
-  const novoUsuario = async (formData: { [key: string]: any }) => {
-
+  const novoUsuario = async (formData: { [key: string]: any }): Promise<boolean> => {
     const {
       login,
       status,
@@ -122,8 +120,8 @@ export const useNovoUsuario = () => {
       ibge,
       token,
       avatar,
-      parametroId,
-      filialId } = formData;
+      filialId
+    } = formData;
 
     const variables = {
       login,
@@ -134,7 +132,7 @@ export const useNovoUsuario = () => {
       senha,
       aniversario,
       telefone,
-      isSuperior,
+      isSuperior: isSuperior !== undefined ? isSuperior : false,
       cep,
       logradouro,
       numero,
@@ -144,36 +142,48 @@ export const useNovoUsuario = () => {
       ibge,
       token,
       avatar,
-      parametroId,
       filialId
     };
 
-    setLoading(true)
+    setLoading(true);
 
     try {
-      const data: NovoUsuarioResposta = await client.request(NOVO_USUARIO, variables);
-      toast.success(`Usuário ${data.novoUsuario.login} criado com sucesso!`);
+      const usuarioArmazenado: NovoUsuarioResposta = await client.request(NOVO_USUARIO, variables);
+      if (usuarioArmazenado.novoUsuario.id) {
+        const permissoes = Array.isArray(formData.permissoes) ? formData.permissoes : [];
+        let todasPermissoesSalvas = true;
+
+        for (const permissao of permissoes) {
+          const resultado = await novoParametro(permissao, usuarioArmazenado.novoUsuario.id);
+          if (!resultado) {
+            todasPermissoesSalvas = false;
+            break;
+          }
+        }
+
+        todasPermissoesSalvas
+          ? toast.success(`Usuário ${usuarioArmazenado.novoUsuario.login} cadastrado com sucesso!`)
+          : toast.error(`Algo de errado ocorreu ao salvar este novo usuário!!`);
+          navigate('/usuarios');
+      }
       return true;
     } catch (err: any) {
-      console.error("Erro ao criar usuário:", err);
 
-      // Verificar se a resposta contém "Unauthorized"
       if (err.response?.errors?.[0]?.message === 'Unauthorized') {
-        // Limpar o localStorage
+
         localStorage.removeItem('token');
         localStorage.removeItem('id');
         toast.warning("Sessão expirada, faça o login novamente!");
-        // Redirecionar para a tela de login
+
         navigate('/');
       } else {
-        toast.error(err.response?.errors?.[0]?.message || 'Erro ao salvar usuários');
+        toast.error(err.response?.errors?.[0]?.message || 'Erro ao salvar usuário!');
       }
       return false;
     } finally {
       setLoading(false);
     }
   };
-
 
   return { loading, novoUsuario };
 };

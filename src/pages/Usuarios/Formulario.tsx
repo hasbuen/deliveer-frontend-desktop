@@ -12,10 +12,10 @@ interface Field {
 
 interface Permissao {
     tela: string;
-    criar: boolean;
-    editar: boolean;
-    apagar: boolean;
-    visualizar: boolean;
+    leitura: boolean;
+    escrita: boolean;
+    exclusao: boolean;
+    edicao: boolean;
 }
 
 interface FormularioProps {
@@ -30,9 +30,9 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
     const [avatars, setAvatars] = useState<string[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [permissoes, setPermissoes] = useState<Permissao[]>([
-        { tela: 'Cadastro de usuários', criar: false, editar: false, apagar: false, visualizar: false },
-        { tela: 'Relatórios', criar: false, editar: false, apagar: false, visualizar: false },
-        { tela: 'Configurações', criar: false, editar: false, apagar: false, visualizar: false },
+        { tela: 'Cadastro de usuários', leitura: false, escrita: false, exclusao: false, edicao: false },
+        { tela: 'Relatórios', leitura: false, escrita: false, exclusao: false, edicao: false },
+        { tela: 'Configurações', leitura: false, escrita: false, exclusao: false, edicao: false },
     ]);
 
     useEffect(() => {
@@ -53,7 +53,11 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(formData);
+        const updatedFormData = {
+            ...formData,
+            permissoes: permissoes
+        };
+        onSubmit(updatedFormData);
     };
 
     const abrirModalPermissoes = () => {
@@ -251,10 +255,10 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                             <thead>
                                 <tr>
                                     <th className="px-4 py-2 text-left text-sm font-bold text-gray-900">Tela</th>
+                                    <th className="px-4 py-2 text-center text-sm font-bold text-gray-900">Ver</th>
                                     <th className="px-4 py-2 text-center text-sm font-bold text-gray-900">Criar</th>
-                                    <th className="px-4 py-2 text-center text-sm font-bold text-gray-900">Editar</th>
                                     <th className="px-4 py-2 text-center text-sm font-bold text-gray-900">Apagar</th>
-                                    <th className="px-4 py-2 text-center text-sm font-bold text-gray-900">Visualizar</th>
+                                    <th className="px-4 py-2 text-center text-sm font-bold text-gray-900">Editar</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -264,29 +268,29 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                                         <td className="px-4 py-2 text-center">
                                             <input
                                                 type="checkbox"
-                                                checked={permissao.criar}
-                                                onChange={() => togglePermissao(index, 'criar')}
+                                                checked={permissao.leitura}
+                                                onChange={() => togglePermissao(index, 'leitura')}
                                             />
                                         </td>
                                         <td className="px-4 py-2 text-center">
                                             <input
                                                 type="checkbox"
-                                                checked={permissao.editar}
-                                                onChange={() => togglePermissao(index, 'editar')}
+                                                checked={permissao.escrita}
+                                                onChange={() => togglePermissao(index, 'escrita')}
                                             />
                                         </td>
                                         <td className="px-4 py-2 text-center">
                                             <input
                                                 type="checkbox"
-                                                checked={permissao.apagar}
-                                                onChange={() => togglePermissao(index, 'apagar')}
+                                                checked={permissao.exclusao}
+                                                onChange={() => togglePermissao(index, 'exclusao')}
                                             />
                                         </td>
                                         <td className="px-4 py-2 text-center">
                                             <input
                                                 type="checkbox"
-                                                checked={permissao.visualizar}
-                                                onChange={() => togglePermissao(index, 'visualizar')}
+                                                checked={permissao.edicao}
+                                                onChange={() => togglePermissao(index, 'edicao')}
                                             />
                                         </td>
                                     </tr>
