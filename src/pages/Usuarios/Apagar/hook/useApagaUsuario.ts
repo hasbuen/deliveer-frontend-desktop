@@ -1,62 +1,59 @@
 import { useState } from 'react';
-import { GraphQLClient, gql } from 'graphql-request';
+import { gql } from 'graphql-request';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import getGraphQLClient from '../../../../utils/graphqlClient';
 
 interface ApagaUsuarioResposta {
-    status: { status: string }; 
+    apagaUsuario: boolean;
+}
+interface ApagaParametrosResposta {
+    apagaParametros: boolean;
 }
 
 const APAGA_USUARIO = gql`
-  mutation apagaUsuario($id: String!) {
-    apagaUsuario(id: $id) {
-      status
-    }
-  }
-`;
+          mutation apagaUsuario($id: String!) {
+            apagaUsuario(id: $id)
+          }
+        `;
 
 const APAGA_PARAMETROS = gql`
-  mutation apagaParametros($id: String!) {
-    apagaParametros(id: $id) {
-      status
-    }
-  }
-`;
+          mutation apagaParametros($usuarioId: String!) {
+            apagaParametros(usuarioId: $usuarioId)
+          }
+        `;
 
 export const useApagaUsuario = () => {
     const [loading, setLoading] = useState<boolean>(false);
-
-    const token = localStorage.getItem('token');
-    const client = new GraphQLClient('http://148.113.204.23:3000/graphql', {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+    const client = getGraphQLClient();
 
     const apagaUsuario = async (id: string) => {
-        setLoading(true); 
-
+        setLoading(true);
         const variables = { id };
 
         try {
-            const resposta: ApagaUsuarioResposta = await client.request(APAGA_USUARIO, variables);
-            console.log(resposta+" AQUI......: "+JSON.stringify(variables))
-            
-            await client.request(APAGA_PARAMETROS, variables);
+            const respostaUsuario: ApagaUsuarioResposta = await client.request(APAGA_USUARIO, variables);
+            respostaUsuario.apagaUsuario
+                ? toast.success('Dados do usuário foram apagados com sucesso!')
+                : toast.error('Erro ao apagar os dados do usuário.');
 
-            toast.success('Dados do usuário foram apagados com sucesso!');
-            if (resposta.status) {
-                window.location.reload();
-                return true;
-            } else {
-                return false;
-            }
+            const respostaParametros: ApagaParametrosResposta = await client.request(APAGA_PARAMETROS, { usuarioId: id });
+            respostaParametros.apagaParametros
+                ? toast.success('Parâmetros do usuário foram apagados com sucesso!')
+                : toast.error('Erro ao apagar os dados do usuário.');
+
+            const sucesso = respostaUsuario.apagaUsuario && respostaParametros.apagaParametros;
+            if (sucesso) window.location.reload();
+            return sucesso;
+
         } catch (err: any) {
+            toast.error('Erro ao processar a requisição.');
             return false;
         } finally {
-            setLoading(false); 
+            setLoading(false);
         }
     };
 
     return { loading, apagaUsuario };
 };
+
