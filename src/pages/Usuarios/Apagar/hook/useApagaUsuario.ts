@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 interface ApagaUsuarioResposta {
-    apagaUsuario: { status: string }; 
+    status: { status: string }; 
 }
 
 const APAGA_USUARIO = gql`
@@ -39,11 +39,13 @@ export const useApagaUsuario = () => {
         const variables = { id };
 
         try {
-            const data: ApagaUsuarioResposta = await client.request(APAGA_USUARIO, variables);
+            const resposta: ApagaUsuarioResposta = await client.request(APAGA_USUARIO, variables);
+            console.log(resposta+" AQUI......: "+JSON.stringify(variables))
+            
             await client.request(APAGA_PARAMETROS, variables);
 
-            toast.error('Dados do usuário foram apagados com sucesso!');
-            if (data.apagaUsuario.status) {
+            toast.success('Dados do usuário foram apagados com sucesso!');
+            if (resposta.status) {
                 window.location.reload();
                 return true;
             } else {

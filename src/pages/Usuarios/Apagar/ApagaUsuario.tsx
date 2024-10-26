@@ -29,13 +29,13 @@ interface Usuario {
     filialId: string | null;
 }
 
-
 const ApagaUsuario: React.FC = () => {
     const { apagaUsuario } = useApagaUsuario();
     const { todosUsuarios } = useTodosUsuarios();
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
     const [usuarioSelecionado, setUsuarioSelecionado] = useState<Usuario | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [usuariosSelecionados, setUsuariosSelecionados] = useState<string[]>([]);
 
     useEffect(() => {
         const carregarUsuarios = async () => {
@@ -49,13 +49,13 @@ const ApagaUsuario: React.FC = () => {
                     email: usuario.email,
                     superiorId: usuario.superiorId || '',
                     senha: usuario.senha || '',
-                    aniversario: usuario.aniversario || new Date(), 
+                    aniversario: usuario.aniversario || new Date(),
                     telefone: usuario.telefone,
                     isSuperior: usuario.isSuperior,
                     cep: usuario.cep || null,
                     logradouro: usuario.logradouro || null,
                     numero: usuario.numero || null,
-                    bairro: usuario.bairro || null, 
+                    bairro: usuario.bairro || null,
                     localidade: usuario.localidade || null,
                     uf: usuario.uf || null,
                     ibge: usuario.ibge || null,
@@ -64,7 +64,6 @@ const ApagaUsuario: React.FC = () => {
                     parametroId: usuario.parametroId || null,
                     filialId: usuario.filialId || null,
                 }));
-
                 setUsuarios(mapeiaUsuarios as Usuario[]);
             } catch (error) {
                 toast.error("Erro ao carregar usuários!");
@@ -83,14 +82,23 @@ const ApagaUsuario: React.FC = () => {
         setUsuarioSelecionado(null);
     };
 
-    const deletarUsuario = async (id: string) => {
+    const deletarUsuario = async (ids: string[]) => {
         try {
-            await apagaUsuario(id);
+            for (const id of ids) {
+              await apagaUsuario(id);
+            }
             fecharDeletarModal();
-            setUsuarios(prev => prev.filter(usuario => usuario.id !== id));
+            setUsuarios(prev => prev.filter(usuario => !ids.includes(usuario.id)));
+            setUsuariosSelecionados([]);
         } catch (error) {
-            toast.error("Erro ao apagar usuário!");
+            toast.error("Erro ao apagar usuários!");
         }
+    };
+
+    const toggleSelecionado = (id: string) => {
+        setUsuariosSelecionados(prev =>
+            prev.includes(id) ? prev.filter(uid => uid !== id) : [...prev, id]
+        );
     };
 
     return (
@@ -100,7 +108,16 @@ const ApagaUsuario: React.FC = () => {
                 <table className="min-w-full divide-y divide-gray-300">
                     <thead className="bg-rose-400 text-black">
                         <tr>
-                            <th scope="col"></th>
+                            <th scope="col">
+                                <input
+                                    type="checkbox"
+                                    checked={usuarios.length > 0 && usuariosSelecionados.length === usuarios.length}
+                                    onChange={() => setUsuariosSelecionados(
+                                        usuariosSelecionados.length === usuarios.length ? [] : usuarios.map(usuario => usuario.id)
+                                    )}
+                                />
+                            </th>
+                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Avatar</th>
                             <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Login</th>
                             <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Nome</th>
                             <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Email</th>
@@ -115,6 +132,13 @@ const ApagaUsuario: React.FC = () => {
                         <tbody className="bg-pink-200">
                             {usuarios.map(usuario => (
                                 <tr key={usuario.id} className='text-black'>
+                                    <td className="px-4 py-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={usuariosSelecionados.includes(usuario.id)}
+                                            onChange={() => toggleSelecionado(usuario.id)}
+                                        />
+                                    </td>
                                     <td className="px-4 py-2">
                                         <img src={`/avatars/${usuario.avatar}`} alt={usuario.nome} className="h-12 w-12 rounded-full" />
                                     </td>
@@ -137,6 +161,15 @@ const ApagaUsuario: React.FC = () => {
                 </div>
             </div>
 
+            <div className="mt-4">
+                <button
+                    onClick={() => deletarUsuario(usuariosSelecionados)}
+                    disabled={usuariosSelecionados.length === 0}
+                    className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">
+                    Apagar Selecionados
+                </button>
+            </div>
+
             {isModalOpen && usuarioSelecionado && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
@@ -147,7 +180,7 @@ const ApagaUsuario: React.FC = () => {
                         <h3 className="text-lg font-semibold">Tem certeza que deseja apagar o usuário {usuarioSelecionado.nome}?</h3>
                         <div className="mt-4">
                             <button
-                                onClick={() => deletarUsuario(usuarioSelecionado.id)}
+                                onClick={() => deletarUsuario([usuarioSelecionado.id])}
                                 className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">
                                 Sim, apagar
                             </button>
