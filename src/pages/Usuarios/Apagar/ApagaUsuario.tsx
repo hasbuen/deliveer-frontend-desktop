@@ -162,12 +162,16 @@ const ApagaUsuario: React.FC = () => {
             </div>
 
             <div className="mt-4">
-                <button
-                    onClick={() => deletarUsuario(usuariosSelecionados)}
-                    disabled={usuariosSelecionados.length === 0}
-                    className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">
-                    Apagar Selecionados
-                </button>
+            <button
+        onClick={() => deletarUsuario(usuariosSelecionados)}
+        disabled={usuariosSelecionados.length === 0} // Desabilita o botão se nenhum usuário estiver selecionado
+        className={`px-4 py-2 rounded-md transition-colors duration-500 ease-in-out ${
+            usuariosSelecionados.length === 0 
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed" // Estilos desabilitados
+                : "bg-transparent text-rose-700 hover:bg-rose-700 hover:text-white" // Estilos habilitados
+        }`}>
+        Apagar Selecionados
+    </button>
             </div>
 
             {isModalOpen && usuarioSelecionado && (

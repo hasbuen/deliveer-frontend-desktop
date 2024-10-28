@@ -32,20 +32,19 @@ export const useApagaUsuario = () => {
         const variables = { id };
 
         try {
+            let mensagem = '';
+
             const respostaUsuario: ApagaUsuarioResposta = await client.request(APAGA_USUARIO, variables);
             respostaUsuario.apagaUsuario
-                ? toast.success('Dados do usuário foram apagados com sucesso!')
-                : toast.error('Erro ao apagar os dados do usuário.');
+                ? mensagem = 'Dados do usuário foram apagados!'
+                : toast.error('Erro ao apagar os dados.');
 
             const respostaParametros: ApagaParametrosResposta = await client.request(APAGA_PARAMETROS, { usuarioId: id });
             respostaParametros.apagaParametros
-                ? toast.success('Parâmetros do usuário foram apagados com sucesso!')
-                : toast.error('Erro ao apagar os dados do usuário.');
+                ? toast.success(mensagem+' Parâmetros também foram apagados com sucesso!')
+                : toast.error('Erro ao apagar os dados.');
 
-            const sucesso = respostaUsuario.apagaUsuario && respostaParametros.apagaParametros;
-            if (sucesso) window.location.reload();
-            return sucesso;
-
+            return respostaUsuario.apagaUsuario && respostaParametros.apagaParametros;
         } catch (err: any) {
             toast.error('Erro ao processar a requisição.');
             return false;
