@@ -11,22 +11,9 @@ interface Usuario {
     status: number;
     nome: string;
     email: string;
-    superiorId: string;
-    senha: string;
-    aniversario: Date;
     telefone: string;
     isSuperior: boolean;
-    cep: string | null;
-    logradouro: string | null;
-    numero: string | null;
-    bairro: string | null;
-    localidade: string | null;
-    uf: string | null;
-    ibge: string | null;
-    token: string | null;
     avatar: string | null;
-    parametroId: string | null;
-    filialId: string | null;
 }
 
 const ApagaUsuario: React.FC = () => {
@@ -36,6 +23,8 @@ const ApagaUsuario: React.FC = () => {
     const [usuarioSelecionado, setUsuarioSelecionado] = useState<Usuario | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [usuariosSelecionados, setUsuariosSelecionados] = useState<string[]>([]);
+    const [confirmacao, setConfirmacao] = useState(""); // Estado para confirmação ("concordo")
+    const [modalAberto, setModalAberto] = useState(false);
 
     useEffect(() => {
         const carregarUsuarios = async () => {
@@ -47,22 +36,9 @@ const ApagaUsuario: React.FC = () => {
                     status: usuario.status || 0,
                     nome: usuario.nome,
                     email: usuario.email,
-                    superiorId: usuario.superiorId || '',
-                    senha: usuario.senha || '',
-                    aniversario: usuario.aniversario || new Date(),
                     telefone: usuario.telefone,
                     isSuperior: usuario.isSuperior,
-                    cep: usuario.cep || null,
-                    logradouro: usuario.logradouro || null,
-                    numero: usuario.numero || null,
-                    bairro: usuario.bairro || null,
-                    localidade: usuario.localidade || null,
-                    uf: usuario.uf || null,
-                    ibge: usuario.ibge || null,
-                    token: usuario.token || null,
                     avatar: usuario.avatar || null,
-                    parametroId: usuario.parametroId || null,
-                    filialId: usuario.filialId || null,
                 }));
                 setUsuarios(mapeiaUsuarios as Usuario[]);
             } catch (error) {
@@ -72,16 +48,19 @@ const ApagaUsuario: React.FC = () => {
         carregarUsuarios();
     }, []);
 
+    // Função para abrir o modal de exclusão de um usuário específico
     const abrirDeletarModal = (usuario: Usuario) => {
         setUsuarioSelecionado(usuario);
         setIsModalOpen(true);
     };
 
+    // Função para fechar o modal
     const fecharDeletarModal = () => {
         setIsModalOpen(false);
         setUsuarioSelecionado(null);
     };
 
+    // Função para deletar o usuário
     const deletarUsuario = async (ids: string[]) => {
         try {
             for (const id of ids) {
@@ -105,10 +84,10 @@ const ApagaUsuario: React.FC = () => {
         <div className="max-w-7xl mx-auto py-10">
             <h2 className="text-3xl font-bold tracking-tight text-rose-600 py-10">Apagar usuários</h2>
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <table className="w-full text-sm text-left rtl:text-right text-rose-500 dark:text-rose-400">
-                        <thead className="text-xs uppercase bg-transparent text-black font-bold">
-                            <tr>
-                                <th scope="col" className="px-6 py-3">
+                <table className="w-full text-sm text-left rtl:text-right text-rose-500 dark:text-rose-400">
+                    <thead className="text-xs uppercase bg-transparent text-black font-bold">
+                        <tr>
+                            <th scope="col" className="px-6 py-3">
                                 <label className="relative inline-block w-6 h-6">
                                     <input
                                         type="checkbox"
@@ -186,34 +165,86 @@ const ApagaUsuario: React.FC = () => {
 
             <div className="mt-4">
                 <button
-                    onClick={() => deletarUsuario(usuariosSelecionados)}
+                    onClick={() => {
+                        if (usuariosSelecionados.length > 1) {
+                            setModalAberto(true);
+                        } else {
+                            deletarUsuario(usuariosSelecionados);
+                        }
+                    }}
                     disabled={usuariosSelecionados.length === 0}
                     className={`px-4 py-2 rounded-md transition-colors duration-500 ease-in-out ${usuariosSelecionados.length === 0
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : "bg-rose-800 text-white hover:bg-rose-700 hover:text-white"
                         }`}>
-                    Apagar Selecionados
+                    Apagar Selecionados (x{usuariosSelecionados.length})
                 </button>
             </div>
 
+            {/* Modal de confirmação */}
+            {modalAberto && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
+                        <button
+                            onClick={() => setModalAberto(false)}
+                            className="absolute top-4 right-4 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md hover:bg-red-700"/>
+                        <h2 className="text-xl font-bold">Confirmar Exclusão</h2>
+                        <p className="mt-4">Você tem certeza que deseja excluir os usuários selecionados?</p>
+                        <input
+                            type="text"
+                            value={confirmacao}
+                            onChange={(e) => setConfirmacao(e.target.value)}
+                            placeholder="Digite 'concordo' para confirmar"
+                            className="mt-4 px-4 py-2 border rounded-md text-sm w-full"
+                        />
+                        <div className="flex justify-end mt-4">
+                            <button
+                                onClick={() => {
+                                    if (confirmacao.toLowerCase() === "concordo") {
+                                        deletarUsuario(usuariosSelecionados);
+                                        setModalAberto(false);
+                                    } else {
+                                        toast.error("Você deve digitar 'concordo' para continuar.");
+                                    }
+                                }}
+                                disabled={confirmacao.toLowerCase() !== "concordo"}
+                                className="px-6 py-2 bg-rose-600 text-white rounded-md hover:bg-rose-700 disabled:opacity-50">
+                                Confirmar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal para confirmação de um único usuário */}
             {isModalOpen && usuarioSelecionado && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                     <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
                         <button
                             onClick={fecharDeletarModal}
-                            className="absolute top-4 right-4 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                            title="Fechar sem alterações!" />
-                        <h3 className="text-lg font-semibold">Tem certeza que deseja apagar o usuário {usuarioSelecionado.nome}?</h3>
-                        <div className="mt-4">
+                            className="absolute top-4 right-4 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md hover:bg-red-700"/>
+                        <h2 className="text-xl font-bold">Confirmar Exclusão</h2>
+                        <p className="mt-4">Você tem certeza que deseja excluir o usuário {usuarioSelecionado.login}?</p>
+                        <input
+                            type="text"
+                            value={confirmacao}
+                            onChange={(e) => setConfirmacao(e.target.value)}
+                            placeholder="Digite 'concordo' para confirmar"
+                            className="mt-4 px-4 py-2 border rounded-md text-sm w-full"
+                        />
+                        <div className="flex justify-end mt-4">
                             <button
-                                onClick={() => deletarUsuario([usuarioSelecionado.id])}
-                                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">
-                                Sim, apagar
-                            </button>
-                            <button
-                                onClick={fecharDeletarModal}
-                                className="ml-4 bg-gray-300 text-black px-4 py-2 rounded-md hover:bg-gray-400">
-                                Cancelar
+                                onClick={() => {
+                                    if (confirmacao.toLowerCase() === "concordo") {
+                                        deletarUsuario([usuarioSelecionado.id]);
+                                        fecharDeletarModal();
+                                    } else {
+                                        toast.error("Você deve digitar 'concordo' para continuar.");
+                                    }
+                                }}
+                                disabled={confirmacao.toLowerCase() !== "concordo"}
+                                className="px-6 py-2 bg-rose-600 text-white rounded-md hover:bg-rose-700 disabled:opacity-50">
+                                Confirmar
                             </button>
                         </div>
                     </div>
