@@ -20,6 +20,15 @@ interface Usuario {
     uf: string;
     ibge: string;
     avatar: string;
+    filialId?: string;
+    parametros?: Array<{
+        usuarioId: string;
+        tela: string;
+        leitura: boolean;
+        escrita: boolean;
+        exclusao: boolean;
+        edicao: boolean
+    }>;
 }
 
 const EditaUsuario: React.FC = () => {
@@ -45,7 +54,8 @@ const EditaUsuario: React.FC = () => {
                     localidade: usuario.localidade,
                     uf: usuario.uf,
                     ibge: usuario.ibge,
-                    avatar: usuario.avatar
+                    avatar: usuario.avatar,
+                    filialId: usuario.filialId,
                 }));
                 setUsuarios(mapeiaUsuarios);
             } catch (error) {
@@ -82,38 +92,42 @@ const EditaUsuario: React.FC = () => {
     return (
         <div className="max-w-7xl mx-auto py-10">
             <h2 className="text-3xl font-bold tracking-tight text-rose-600 py-10">Editar usuários</h2>
-            <div className="border-b border-gray-200 shadow sm:rounded-lg">
-                <table className="min-w-full divide-y divide-gray-300">
-                    <thead className="bg-rose-400 text-black">
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Login</th>
-                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Nome</th>
-                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Email</th>
-                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Telefone</th>
-                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Superior?</th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-                </table>
-                <div className="overflow-y-auto h-auto"> 
-                    <table className="min-w-full divide-y divide-gray-300">
-                        <tbody className="bg-pink-200">
+            
+                <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table className="w-full text-sm text-left rtl:text-right text-rose-500 dark:text-rose-400">
+                        <thead className="text-xs uppercase bg-transparent text-black font-bold">
+                            <tr>
+                                <th scope="col" className="px-6 py-3"></th>
+                                <th scope="col" className="px-6 py-3">Login</th>
+                                <th scope="col" className="px-6 py-3">Nome</th>
+                                <th scope="col" className="px-6 py-3">Email</th>
+                                <th scope="col" className="px-6 py-3">Telefone</th>
+                                <th scope="col" className="px-6 py-3">Superior?</th>
+                                <th scope="col" className="px-6 py-3"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
                             {usuarios.map(usuario => (
-                                <tr key={usuario.login} className='text-black'>
-                                    <td className="px-4 py-2">
+                                <tr key={usuario.login}>
+                                    <th scope="row" className="px-6 py-4 font-medium bg-transparent text-black whitespace-nowrap">
                                         <img src={`/avatars/${usuario.avatar}`} alt={usuario.nome} className="h-12 w-12 rounded-full" />
+                                    </th>
+                                    <td className="px-6 py-4 bg-rose-200 text-black">{usuario.login}</td>
+                                    <td className="px-6 py-4 bg-rose-200 text-black">{usuario.nome}</td>
+                                    <td className="px-6 py-4 bg-rose-200 text-black">{usuario.email}</td>
+                                    <td className="px-6 py-4 bg-rose-200 text-black">{usuario.telefone}</td>
+                                    <td className="px-6 py-4 bg-rose-200 text-black">
+                                        {usuario.isSuperior ? (
+                                            <CheckIcon className="h-6 w-6 text-green-700 font-bold" />
+                                        ) : (
+                                            <XMarkIcon className="h-6 w-6 text-red-500 font-bold" />
+                                        )}
                                     </td>
-                                    <td className="px-4 py-2">{usuario.login}</td>
-                                    <td className="px-4 py-2">{usuario.nome}</td>
-                                    <td className="px-4 py-2">{usuario.email}</td>
-                                    <td className="px-4 py-2">{usuario.telefone}</td>
-                                    <td className="px-4 py-2">{usuario.isSuperior ? <CheckIcon className="h-6 w-6 text-green-500 font-bold"/> : <XMarkIcon className="h-6 w-6 text-red-500 font-bold"/>}</td>
-                                    <td className="px-4 py-2">
+                                    <td className="px-6 py-4 bg-transparent">
                                         <button
                                             onClick={() => abrirAtualizaModal(usuario)}
                                             className="text-indigo-600 hover:text-indigo-900">
-                                            <PencilSquareIcon className='w-5 h-5 mr-2' />
+                                            <PencilSquareIcon className="w-5 h-5 mr-2" />
                                         </button>
                                     </td>
                                 </tr>
@@ -121,7 +135,8 @@ const EditaUsuario: React.FC = () => {
                         </tbody>
                     </table>
                 </div>
-            </div>
+
+
 
             {isModalOpen && usuarioSelecionado && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -134,14 +149,14 @@ const EditaUsuario: React.FC = () => {
                         <Formulario
                             name={`Atualização`}
                             fields={[
+                                { label: 'Superior', name: 'isSuperior', valueBool: usuarioSelecionado.isSuperior, type: 'checkbox' },
                                 { label: 'Nome', name: 'nome', value: usuarioSelecionado.nome, type: 'text' },
                                 { label: 'Email', name: 'email', value: usuarioSelecionado.email, type: 'email' },
                                 { label: 'Telefone', name: 'telefone', value: usuarioSelecionado.telefone, type: 'tel' },
-                                { label: 'Superior', name: 'isSuperior', valueBool: usuarioSelecionado.isSuperior, type: 'checkbox' },
                                 { label: 'CEP', name: 'cep', value: usuarioSelecionado.cep, type: 'text' },
                                 { label: 'Logradouro', name: 'logradouro', value: usuarioSelecionado.logradouro, type: 'text' },
                                 { label: 'Numero', name: 'numero', value: usuarioSelecionado.numero, type: 'text' },
-                                { label: 'localidade', name: 'localidade', value: usuarioSelecionado.localidade, type: 'text' },
+                                { label: 'Localidade', name: 'localidade', value: usuarioSelecionado.localidade, type: 'text' },
                                 { label: 'UF', name: 'uf', value: usuarioSelecionado.uf, type: 'text' },
                                 { label: 'IBGE', name: 'ibge', value: usuarioSelecionado.ibge, type: 'text' },
                                 { label: 'Avatar', name: 'avatar', value: usuarioSelecionado.avatar, type: 'file' }
@@ -156,7 +171,10 @@ const EditaUsuario: React.FC = () => {
                                 numero: data.numero,
                                 localidade: data.localidade,
                                 uf: data.uf,
-                                ibge: data.ibge
+                                ibge: data.ibge,
+                                avatar: data.avatar,
+                                filialId: usuarioSelecionado.filialId,
+                                parametros: data.parametros
                             })}
                             initialData={usuarioSelecionado}
                         />

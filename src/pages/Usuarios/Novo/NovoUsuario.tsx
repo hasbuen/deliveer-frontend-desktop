@@ -1,4 +1,3 @@
-// src/pages/Usuarios/NovoUsuario.tsx
 import Formulario from '../Formulario';
 import { useNovoUsuario } from "./hook/useNovoUsuario";
 

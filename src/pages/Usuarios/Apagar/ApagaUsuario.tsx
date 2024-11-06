@@ -85,7 +85,7 @@ const ApagaUsuario: React.FC = () => {
     const deletarUsuario = async (ids: string[]) => {
         try {
             for (const id of ids) {
-              await apagaUsuario(id);
+                await apagaUsuario(id);
             }
             fecharDeletarModal();
             setUsuarios(prev => prev.filter(usuario => !ids.includes(usuario.id)));
@@ -103,75 +103,97 @@ const ApagaUsuario: React.FC = () => {
 
     return (
         <div className="max-w-7xl mx-auto py-10">
-            <h2 className="text-3xl font-bold tracking-tight text-rose-600 py-10">Gerenciar usuários</h2>
-            <div className="border-b border-gray-200 shadow sm:rounded-lg">
-                <table className="min-w-full divide-y divide-gray-300">
-                    <thead className="bg-rose-400 text-black">
-                        <tr>
-                            <th scope="col">
-                                <input
-                                    type="checkbox"
-                                    checked={usuarios.length > 0 && usuariosSelecionados.length === usuarios.length}
-                                    onChange={() => setUsuariosSelecionados(
-                                        usuariosSelecionados.length === usuarios.length ? [] : usuarios.map(usuario => usuario.id)
-                                    )}
-                                />
+            <h2 className="text-3xl font-bold tracking-tight text-rose-600 py-10">Apagar usuários</h2>
+            <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                    <table className="w-full text-sm text-left rtl:text-right text-rose-500 dark:text-rose-400">
+                        <thead className="text-xs uppercase bg-transparent text-black font-bold">
+                            <tr>
+                                <th scope="col" className="px-6 py-3">
+                                <label className="relative inline-block w-6 h-6">
+                                    <input
+                                        type="checkbox"
+                                        checked={usuarios.length > 0 && usuariosSelecionados.length === usuarios.length}
+                                        onChange={() => setUsuariosSelecionados(
+                                            usuariosSelecionados.length === usuarios.length ? [] : usuarios.map(usuario => usuario.id)
+                                        )}
+                                        className="opacity-0 absolute w-0 h-0"
+                                    />
+                                    <div
+                                        className={`w-5 h-5 rounded-full border-1
+                                ${usuariosSelecionados.length === usuarios.length ? 'bg-red-500' : 'bg-blue-500'}
+                                transition-all duration-300 cursor-pointer`}
+                                    />
+                                </label>
                             </th>
-                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Avatar</th>
-                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Login</th>
-                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Nome</th>
-                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Email</th>
-                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Telefone</th>
-                            <th scope="col" className="px-4 py-2 text-center text-base font-bold capitalize tracking-wider">Superior?</th>
-                            <th scope="col"></th>
+                            <th scope="col" className="px-6 py-3"></th>
+                            <th scope="col" className="px-6 py-3">Login</th>
+                            <th scope="col" className="px-6 py-3">Nome</th>
+                            <th scope="col" className="px-6 py-3">Email</th>
+                            <th scope="col" className="px-6 py-3">Telefone</th>
+                            <th scope="col" className="px-6 py-3">Superior?</th>
+                            <th scope="col" className="px-6 py-3"></th>
                         </tr>
                     </thead>
-                </table>
-                <div className="overflow-y-auto h-auto">
-                    <table className="min-w-full divide-y divide-gray-300">
-                        <tbody className="bg-pink-200">
-                            {usuarios.map(usuario => (
-                                <tr key={usuario.id} className='text-black'>
-                                    <td className="px-4 py-2">
+                    <tbody>
+                        {usuarios.map(usuario => (
+                            <tr key={usuario.id}>
+                                <td className="px-6 py-4 bg-transparent text-black">
+                                    <div className="flex items-center justify-center">
                                         <input
                                             type="checkbox"
                                             checked={usuariosSelecionados.includes(usuario.id)}
                                             onChange={() => toggleSelecionado(usuario.id)}
+                                            className="hidden"
                                         />
-                                    </td>
-                                    <td className="px-4 py-2">
-                                        <img src={`/avatars/${usuario.avatar}`} alt={usuario.nome} className="h-12 w-12 rounded-full" />
-                                    </td>
-                                    <td className="px-4 py-2">{usuario.login}</td>
-                                    <td className="px-4 py-2">{usuario.nome}</td>
-                                    <td className="px-4 py-2">{usuario.email}</td>
-                                    <td className="px-4 py-2">{usuario.telefone}</td>
-                                    <td className="px-4 py-2">{usuario.isSuperior ? <CheckIcon className="h-6 w-6 text-green-500 font-bold" /> : <XMarkIcon className="h-6 w-6 text-red-500 font-bold" />}</td>
-                                    <td className="px-4 py-2">
-                                        <button
-                                            onClick={() => abrirDeletarModal(usuario)}
-                                            className="text-red-600 hover:text-red-900">
-                                            <TrashIcon className='w-5 h-5 mr-2' />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                                        <div
+                                            onClick={() => toggleSelecionado(usuario.id)}
+                                            className={`w-10 h-5 rounded-full cursor-pointer transition-colors duration-300 
+                                    ${usuariosSelecionados.includes(usuario.id) ? 'bg-red-500' : 'bg-blue-400'}`}
+                                        >
+                                            <div
+                                                className={`w-5 h-5 bg-gray-700 rounded-full shadow-md transform transition-transform duration-300 
+                                        ${usuariosSelecionados.includes(usuario.id) ? 'translate-x-5' : 'translate-x-0'}`}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 bg-transparent text-black">
+                                    <img src={`/avatars/${usuario.avatar}`} alt={usuario.nome} className="h-12 w-12 rounded-full" />
+                                </td>
+                                <td className="px-6 py-4 bg-rose-200 text-black">{usuario.login}</td>
+                                <td className="px-6 py-4 bg-rose-200 text-black">{usuario.nome}</td>
+                                <td className="px-6 py-4 bg-rose-200 text-black">{usuario.email}</td>
+                                <td className="px-6 py-4 bg-rose-200 text-black">{usuario.telefone}</td>
+                                <td className="px-6 py-4 bg-rose-200 text-black">
+                                    {usuario.isSuperior ? (
+                                        <CheckIcon className="h-6 w-6 text-green-700 font-bold" />
+                                    ) : (
+                                        <XMarkIcon className="h-6 w-6 text-red-500 font-bold" />
+                                    )}
+                                </td>
+                                <td className="px-6 py-4 bg-transparent text-black">
+                                    <button
+                                        onClick={() => abrirDeletarModal(usuario)}
+                                        className="text-red-600 hover:text-red-900">
+                                        <TrashIcon className="w-5 h-5 mr-2" />
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
 
             <div className="mt-4">
-            <button
-        onClick={() => deletarUsuario(usuariosSelecionados)}
-        disabled={usuariosSelecionados.length === 0} // Desabilita o botão se nenhum usuário estiver selecionado
-        className={`px-4 py-2 rounded-md transition-colors duration-500 ease-in-out ${
-            usuariosSelecionados.length === 0 
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed" // Estilos desabilitados
-                : "bg-transparent text-rose-700 hover:bg-rose-700 hover:text-white" // Estilos habilitados
-        }`}>
-        Apagar Selecionados
-    </button>
+                <button
+                    onClick={() => deletarUsuario(usuariosSelecionados)}
+                    disabled={usuariosSelecionados.length === 0}
+                    className={`px-4 py-2 rounded-md transition-colors duration-500 ease-in-out ${usuariosSelecionados.length === 0
+                        ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                        : "bg-rose-800 text-white hover:bg-rose-700 hover:text-white"
+                        }`}>
+                    Apagar Selecionados
+                </button>
             </div>
 
             {isModalOpen && usuarioSelecionado && (
@@ -180,7 +202,7 @@ const ApagaUsuario: React.FC = () => {
                         <button
                             onClick={fecharDeletarModal}
                             className="absolute top-4 right-4 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                            title="Fechar sem salvar!">X</button>
+                            title="Fechar sem alterações!" />
                         <h3 className="text-lg font-semibold">Tem certeza que deseja apagar o usuário {usuarioSelecionado.nome}?</h3>
                         <div className="mt-4">
                             <button

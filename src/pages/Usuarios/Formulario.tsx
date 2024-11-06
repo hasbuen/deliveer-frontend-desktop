@@ -11,6 +11,7 @@ interface Field {
 }
 
 interface Permissao {
+    usuarioId: string;
     tela: string;
     leitura: boolean;
     escrita: boolean;
@@ -30,15 +31,25 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
     const [avatars, setAvatars] = useState<string[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [permissoes, setPermissoes] = useState<Permissao[]>([
-        { tela: 'Cadastro de usuários', leitura: false, escrita: false, exclusao: false, edicao: false },
-        { tela: 'Relatórios', leitura: false, escrita: false, exclusao: false, edicao: false },
-        { tela: 'Configurações', leitura: false, escrita: false, exclusao: false, edicao: false },
+        { usuarioId: '', tela: 'Dashboard', leitura: false, escrita: false, exclusao: false, edicao: false },
+        { usuarioId: '', tela: 'Configurações', leitura: false, escrita: false, exclusao: false, edicao: false },
     ]);
 
     useEffect(() => {
         const avatarImages = Array.from({ length: 20 }, (_, index) => `${index + 1}.png`);
         setAvatars(avatarImages);
     }, []);
+
+    useEffect(() => {
+        if (formData.usuarioId) {
+            setPermissoes(prevPermissoes =>
+                prevPermissoes.map(permissao => ({
+                    ...permissao,
+                    usuarioId: formData.usuarioId,
+                }))
+            );
+        }
+    }, [formData.usuarioId]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, type, value } = e.target;
@@ -55,7 +66,6 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
         e.preventDefault();
         const updatedFormData = {
             ...formData,
-            permissoes: permissoes
         };
         onSubmit(updatedFormData);
     };
@@ -65,6 +75,13 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
     };
 
     const fecharModalPermissoes = () => {
+        setFormData(prevFormData => {
+            const updatedFormData = {
+                ...prevFormData,
+                parametros: permissoes
+            };
+            return updatedFormData;
+        });
         setIsModalOpen(false);
     };
 
@@ -110,33 +127,44 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                 <div key={field.name} className="flex justify-center">
 
                     {field.type === 'checkbox' ? (
-                        <div className="relative flex items-center sm:mx-2 mt-5">
-                            <div className='flex flex-col ml-4'>
-                                <label className='flex flex-row justify-center bg-rose-700 shadow-rose-800 shadow-lg cursor-pointer p-0'>
-                                    <input
-                                        type="checkbox"
-                                        name={field.name}
-                                        checked={formData[field.name] || false}
-                                        onChange={handleChange}
-                                    />
-                                    <span className="text-white font-extrabold">{field.label}?</span>
-                                </label>
+                        <div className="relative flex justify-between items-center sm:mx-0 mt-5 mb-8 w-full px-0">
+                            <div className="flex items-center space-x-2 bg-transparent p-2 cursor-pointer">
+                                <label className="flex items-center space-x-2 p-2 cursor-pointer">
+                                    <span className="text-black font-extrabold">{field.label}?</span>
 
-                                <div className="flex items-center justify-center mt-4">
-                                    <span className="text-rose-600 font-extrabold mr-4">Configurar permissões</span>
-                                    <button
-                                        type="button"
-                                        onClick={abrirModalPermissoes}
-                                        className="rounded-full border-2 shadow-black shadow-xl bg-black text-white font-semibold leading-6 hover:bg-rose-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-rose-600 transition-colors duration-500 ease-in-out"
-                                    >
-                                        <AdjustmentsHorizontalIcon className="h-8 w-8 my-1 mx-1" aria-hidden="true" />
-                                    </button>
-                                </div>
+                                    <div className="relative inline-block w-16 h-4">
+                                        <input
+                                            type="checkbox"
+                                            name={field.name}
+                                            checked={formData[field.name] || false}
+                                            onChange={handleChange}
+                                            id={`toggle-${field.name}`}
+                                            className="hidden"
+                                        />
+                                        <div
+                                            className={`w-10 h-5 rounded-full cursor-pointer transition-colors duration-300 
+                ${formData[field.name] ? 'bg-amber-400' : 'bg-gray-300'}`}
+                                        >
+                                            <div
+                                                className={`w-5 h-5 bg-gray-500 rounded-full shadow-md transform transition-transform duration-300 
+                    ${formData[field.name] ? 'translate-x-5' : 'translate-x-0'}`}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                </label>
                             </div>
+
+                            <a
+                                onClick={abrirModalPermissoes}
+                                className="flex items-center space-x-2 px-3 py-2 rounded-lg bg-gray-300 text-rose-600 font-extrabold cursor-pointer transition-colors duration-300 hover:bg-rose-200"
+                            >
+                                <span>Configurar permissões</span>
+                                <AdjustmentsHorizontalIcon className="h-6 w-6 text-rose-600" aria-hidden="true" />
+                            </a>
                         </div>
                     ) : null}
                 </div>
-            ))};
+            ))}
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {name === 'Novo usuário' && fields.slice(1).map((field) => (
@@ -186,7 +214,7 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                 ))
                 }
 
-                {name === 'Atualização' && fields.map((field) => (
+                {name === 'Atualização' && fields.slice(1).map((field) => (
                     <div key={field.name} className={`flex flex-col ${field.name === 'avatar' ? 'sm:col-span-3' : 'sm:col-span-1'}`}>
                         {field.type !== 'checkbox' && (
                             <label htmlFor={field.name} className="text-sm font-medium text-rose-600">
@@ -301,8 +329,6 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                 </div>
             )}
         </form>
-
-
     );
 };
 
