@@ -77,15 +77,11 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
         setIsModalOpen(true);
     
         try {
-            // Carregar os parâmetros do usuário
-            const response = await carregaParametrosUsuario(formData.usuarioId);
-            
-            // Verifique se o response não é false e se é um array (Parametro[])
+            const response = await carregaParametrosUsuario(formData.id);
+            console.log(response)
             if (Array.isArray(response)) {
-                // Agora você pode acessar a função buscaParametrosPorUsuarioId() sem erro
                 const parametros = response;
-    
-                // Verificar se os parâmetros foram encontrados
+
                 if (parametros) {
                     setPermissoes(parametros);
                 } else {

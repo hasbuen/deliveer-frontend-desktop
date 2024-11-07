@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useEditaParametro } from './hook/useEditaParametros';
 import { useEditaUsuario } from "./hook/useEditaUsuario";
 import { useTodosUsuarios } from "../Todos/hook/useTodosUsuarios";
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
@@ -9,6 +8,7 @@ import { toast } from 'react-toastify';
 import Formulario from '../Formulario';
 
 interface Usuario {
+    id: string;
     login: string;
     nome: string;
     email: string;
@@ -33,7 +33,6 @@ interface Usuario {
 }
 
 const EditaUsuario: React.FC = () => {
-    const { carregaParametrosUsuario } = useEditaParametro();
     const { editaUsuario } = useEditaUsuario();
     const { todosUsuarios } = useTodosUsuarios();
     const [usuarios, setUsuarios] = useState<Usuario[]>([]);
@@ -45,6 +44,7 @@ const EditaUsuario: React.FC = () => {
             try {
                 const usuariosData = await todosUsuarios();
                 const mapeiaUsuarios = usuariosData.map((usuario: any) => ({
+                    id: usuario.id,
                     login: usuario.login,
                     nome: usuario.nome,
                     email: usuario.email,
