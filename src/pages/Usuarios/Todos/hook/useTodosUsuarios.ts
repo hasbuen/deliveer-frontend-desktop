@@ -62,19 +62,18 @@ export const useTodosUsuarios = () => {
 
     try {
       const id = localStorage.getItem('id');
-      const data: TodosUsuariosResposta = await client.request(TODOS_USUARIOS, { superiorId: id });
-      return data.todosUsuarios;
+      const todosUsuarios: TodosUsuariosResposta = await client.request(TODOS_USUARIOS, { superiorId: id });
+      return todosUsuarios.todosUsuarios;
     } catch (err: any) {
       console.error(err);
 
-      // Verificar se a resposta contém "Unauthorized"
       if (err.response?.errors?.[0]?.message === 'Unauthorized') {
-        // Limpar o localStorage
+       
         localStorage.removeItem('token');
         localStorage.removeItem('id');
 
         toast.warning("Sessão expirada, faça o login novamente!");
-        // Redirecionar para a tela de login
+      
         navigate('/');
       } else {
         toast.error(err.response?.errors?.[0]?.message || 'Erro ao buscar usuários');

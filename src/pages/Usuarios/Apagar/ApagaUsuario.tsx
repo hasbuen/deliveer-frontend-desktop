@@ -172,8 +172,8 @@ const ApagaUsuario: React.FC = () => {
                             deletarUsuario(usuariosSelecionados);
                         }
                     }}
-                    disabled={usuariosSelecionados.length === 0}
-                    className={`px-4 py-2 rounded-md transition-colors duration-500 ease-in-out ${usuariosSelecionados.length === 0
+                    disabled={usuariosSelecionados.length <= 1}
+                    className={`px-4 py-2 rounded-md transition-colors duration-500 ease-in-out ${usuariosSelecionados.length <= 1
                         ? "bg-gray-300 text-gray-500 cursor-not-allowed"
                         : "bg-rose-800 text-white hover:bg-rose-700 hover:text-white"
                         }`}>

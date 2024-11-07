@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { AdjustmentsHorizontalIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { useEditaParametro } from './Editar/hook/useEditaParametros';
 import { cepSearch } from '../../utils/cepSearch';
+import { toast } from 'react-toastify';
 
 interface Field {
     label: string;
@@ -27,6 +29,7 @@ interface FormularioProps {
 }
 
 const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initialData = {} }) => {
+    const { carregaParametrosUsuario } = useEditaParametro();
     const [formData, setFormData] = useState<{ [key: string]: any }>(initialData);
     const [avatars, setAvatars] = useState<string[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -70,10 +73,36 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
         onSubmit(updatedFormData);
     };
 
-    const abrirModalPermissoes = () => {
+    const abrirModalPermissoes = async () => {
         setIsModalOpen(true);
+    
+        try {
+            // Carregar os parâmetros do usuário
+            const response = await carregaParametrosUsuario(formData.usuarioId);
+            
+            // Verifique se o response não é false e se é um array (Parametro[])
+            if (Array.isArray(response)) {
+                // Agora você pode acessar a função buscaParametrosPorUsuarioId() sem erro
+                const parametros = response;
+    
+                // Verificar se os parâmetros foram encontrados
+                if (parametros) {
+                    setPermissoes(parametros);
+                } else {
+                    toast.error("Erro ao carregar parâmetros do usuário!");
+                }
+            } else {
+                // Caso o response seja false, trate da forma adequada
+                console.log("Resposta foi false");
+                toast.error("Erro ao carregar parâmetros do usuário!");
+            }
+    
+        } catch (error) {
+            // Tratamento de erros
+            toast.error("Erro ao carregar parâmetros do usuário!");
+        }
     };
-
+    
     const fecharModalPermissoes = () => {
         setFormData(prevFormData => {
             const updatedFormData = {
@@ -278,53 +307,100 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                             className="absolute top-4 right-4 bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                             title="Pronto?"
                         />
-                        <h3 className="text-xl font-bold mb-4">Configurar Permissões</h3>
-                        <table className="min-w-full divide-y divide-gray-300">
-                            <thead>
-                                <tr>
-                                    <th className="px-4 py-2 text-left text-sm font-bold text-gray-900">Tela</th>
-                                    <th className="px-4 py-2 text-center text-sm font-bold text-gray-900">Ver</th>
-                                    <th className="px-4 py-2 text-center text-sm font-bold text-gray-900">Criar</th>
-                                    <th className="px-4 py-2 text-center text-sm font-bold text-gray-900">Apagar</th>
-                                    <th className="px-4 py-2 text-center text-sm font-bold text-gray-900">Editar</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {permissoes.map((permissao, index) => (
-                                    <tr key={permissao.tela}>
-                                        <td className="px-4 py-2">{permissao.tela}</td>
-                                        <td className="px-4 py-2 text-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={permissao.leitura}
-                                                onChange={() => togglePermissao(index, 'leitura')}
-                                            />
-                                        </td>
-                                        <td className="px-4 py-2 text-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={permissao.escrita}
-                                                onChange={() => togglePermissao(index, 'escrita')}
-                                            />
-                                        </td>
-                                        <td className="px-4 py-2 text-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={permissao.exclusao}
-                                                onChange={() => togglePermissao(index, 'exclusao')}
-                                            />
-                                        </td>
-                                        <td className="px-4 py-2 text-center">
-                                            <input
-                                                type="checkbox"
-                                                checked={permissao.edicao}
-                                                onChange={() => togglePermissao(index, 'edicao')}
-                                            />
-                                        </td>
+                        <h3 className="text-xl font-bold mb-4">Permissões</h3>
+                        <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                            <table className="w-full text-sm text-left rtl:text-right text-rose-500 dark:text-rose-400">
+                                <thead className="text-xs uppercase bg-transparent text-black font-bold">
+                                    <tr>
+                                        <th scope="col" className="px-6 py-3">Tela</th>
+                                        <th scope="col" className="px-6 py-3">Ver</th>
+                                        <th scope="col" className="px-6 py-3">Criar</th>
+                                        <th scope="col" className="px-6 py-3">Apagar</th>
+                                        <th scope="col" className="px-6 py-3">Editar</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {permissoes.map((permissao, index) => (
+                                        <tr key={permissao.tela}>
+                                            <td className="px-6 py-4 text-black font-bold">{permissao.tela}</td>
+                                            <td className="px-6 py-4 text-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={permissao.leitura}
+                                                    onChange={() => togglePermissao(index, 'leitura')}
+                                                    className="hidden"
+                                                />
+                                                <div
+                                                    onClick={() => togglePermissao(index, 'leitura')}
+                                                    className={`w-10 h-5 rounded-full cursor-pointer transition-colors duration-300 
+            ${permissao.leitura ? 'bg-red-500' : 'bg-blue-400'}`}
+                                                >
+                                                    <div
+                                                        className={`w-5 h-5 bg-gray-700 rounded-full shadow-md transform transition-transform duration-300 
+                ${permissao.leitura ? 'translate-x-5' : 'translate-x-0'}`}
+                                                    ></div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={permissao.escrita}
+                                                    onChange={() => togglePermissao(index, 'escrita')}
+                                                    className="hidden"
+                                                />
+                                                <div
+                                                    onClick={() => togglePermissao(index, 'escrita')}
+                                                    className={`w-10 h-5 rounded-full cursor-pointer transition-colors duration-300 
+            ${permissao.escrita ? 'bg-red-500' : 'bg-blue-400'}`}
+                                                >
+                                                    <div
+                                                        className={`w-5 h-5 bg-gray-700 rounded-full shadow-md transform transition-transform duration-300 
+                ${permissao.escrita ? 'translate-x-5' : 'translate-x-0'}`}
+                                                    ></div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={permissao.exclusao}
+                                                    onChange={() => togglePermissao(index, 'exclusao')}
+                                                    className="hidden"
+                                                />
+                                                <div
+                                                    onClick={() => togglePermissao(index, 'exclusao')}
+                                                    className={`w-10 h-5 rounded-full cursor-pointer transition-colors duration-300 
+            ${permissao.exclusao ? 'bg-red-500' : 'bg-blue-400'}`}
+                                                >
+                                                    <div
+                                                        className={`w-5 h-5 bg-gray-700 rounded-full shadow-md transform transition-transform duration-300 
+                ${permissao.exclusao ? 'translate-x-5' : 'translate-x-0'}`}
+                                                    ></div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={permissao.edicao}
+                                                    onChange={() => togglePermissao(index, 'edicao')}
+                                                    className="hidden"
+                                                />
+                                                <div
+                                                    onClick={() => togglePermissao(index, 'edicao')}
+                                                    className={`w-10 h-5 rounded-full cursor-pointer transition-colors duration-300 
+            ${permissao.edicao ? 'bg-red-500' : 'bg-blue-400'}`}
+                                                >
+                                                    <div
+                                                        className={`w-5 h-5 bg-gray-700 rounded-full shadow-md transform transition-transform duration-300 
+                ${permissao.edicao ? 'translate-x-5' : 'translate-x-0'}`}
+                                                    ></div>
+                                                </div>
+                                            </td>
+
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             )}
