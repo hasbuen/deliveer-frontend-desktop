@@ -37,7 +37,7 @@ export const useNovoParametro = () => {
     const navigate = useNavigate();
     const client = getGraphQLClient();
 
-    const novoParametro = async (formData: { [key: string]: any }, usuarioId: string) => {
+    const novoParametro = async (usuarioId: string, formData: { [key: string]: any }) => {
         const { tela, leitura, escrita, exclusao, edicao } = formData;
         
         const variables = {

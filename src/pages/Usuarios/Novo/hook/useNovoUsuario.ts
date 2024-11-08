@@ -120,7 +120,8 @@ export const useNovoUsuario = () => {
       ibge,
       token,
       avatar,
-      filialId
+      filialId,
+      parametros
     } = formData;
 
     const variables = {
@@ -150,11 +151,11 @@ export const useNovoUsuario = () => {
     try {
       const usuarioArmazenado: NovoUsuarioResposta = await client.request(NOVO_USUARIO, variables);
       if (usuarioArmazenado.novoUsuario.id) {
-        const permissoes = Array.isArray(formData.permissoes) ? formData.permissoes : [];
-        let todasPermissoesSalvas = true;
 
+        const permissoes = Array.isArray(parametros) ? parametros : [];
+        let todasPermissoesSalvas = true;
         for (const permissao of permissoes) {
-          const resultado = await novoParametro(permissao, usuarioArmazenado.novoUsuario.id);
+          const resultado = await novoParametro(usuarioArmazenado.novoUsuario.id, permissao);
           if (!resultado) {
             todasPermissoesSalvas = false;
             break;

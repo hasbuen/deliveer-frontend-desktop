@@ -75,30 +75,28 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
 
     const abrirModalPermissoes = async () => {
         setIsModalOpen(true);
-    
-        try {
-            const response = await carregaParametrosUsuario(formData.id);
-            console.log(response)
-            if (Array.isArray(response)) {
-                const parametros = response;
 
-                if (parametros) {
-                    setPermissoes(parametros);
+        if (formData.id) {
+            try {
+                const response = await carregaParametrosUsuario(formData.id);
+                if (Array.isArray(response)) {
+                    const parametros = response;
+
+                    if (parametros) {
+                        setPermissoes(parametros);
+                    } else {
+                        toast.error("Erro ao carregar parâmetros do usuário!");
+                    }
                 } else {
                     toast.error("Erro ao carregar parâmetros do usuário!");
                 }
-            } else {
-                // Caso o response seja false, trate da forma adequada
-                console.log("Resposta foi false");
+
+            } catch (error) {
                 toast.error("Erro ao carregar parâmetros do usuário!");
             }
-    
-        } catch (error) {
-            // Tratamento de erros
-            toast.error("Erro ao carregar parâmetros do usuário!");
         }
     };
-    
+
     const fecharModalPermissoes = () => {
         setFormData(prevFormData => {
             const updatedFormData = {
