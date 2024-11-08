@@ -3,6 +3,7 @@ import { AdjustmentsHorizontalIcon, MagnifyingGlassIcon } from '@heroicons/react
 import { useEditaParametro } from './Editar/hook/useEditaParametros';
 import { cepSearch } from '../../utils/cepSearch';
 import { toast } from 'react-toastify';
+import Toggle from '../../commons/UI/Toggle';
 
 interface Field {
     label: string;
@@ -318,78 +319,41 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                                         <tr key={permissao.tela}>
                                             <td className="px-6 py-4 text-black font-bold">{permissao.tela}</td>
                                             <td className="px-6 py-4 text-center">
-                                                <input
+                                                <Toggle
                                                     type="checkbox"
                                                     checked={permissao.leitura}
                                                     onChange={() => togglePermissao(index, 'leitura')}
-                                                    className="hidden"
+                                                    activeColor="bg-amber-400"
+                                                    inactiveColor="bg-blue-400"
                                                 />
-                                                <div
-                                                    onClick={() => togglePermissao(index, 'leitura')}
-                                                    className={`w-10 h-5 rounded-full cursor-pointer transition-colors duration-300 
-            ${permissao.leitura ? 'bg-red-500' : 'bg-blue-400'}`}
-                                                >
-                                                    <div
-                                                        className={`w-5 h-5 bg-gray-700 rounded-full shadow-md transform transition-transform duration-300 
-                ${permissao.leitura ? 'translate-x-5' : 'translate-x-0'}`}
-                                                    ></div>
-                                                </div>
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <input
+                                                <Toggle
                                                     type="checkbox"
                                                     checked={permissao.escrita}
                                                     onChange={() => togglePermissao(index, 'escrita')}
-                                                    className="hidden"
+                                                    activeColor="bg-amber-400"
+                                                    inactiveColor="bg-blue-400"
                                                 />
-                                                <div
-                                                    onClick={() => togglePermissao(index, 'escrita')}
-                                                    className={`w-10 h-5 rounded-full cursor-pointer transition-colors duration-300 
-            ${permissao.escrita ? 'bg-red-500' : 'bg-blue-400'}`}
-                                                >
-                                                    <div
-                                                        className={`w-5 h-5 bg-gray-700 rounded-full shadow-md transform transition-transform duration-300 
-                ${permissao.escrita ? 'translate-x-5' : 'translate-x-0'}`}
-                                                    ></div>
-                                                </div>
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <input
+                                                <Toggle
                                                     type="checkbox"
                                                     checked={permissao.exclusao}
                                                     onChange={() => togglePermissao(index, 'exclusao')}
-                                                    className="hidden"
+                                                    activeColor="bg-amber-400"
+                                                    inactiveColor="bg-blue-400"
                                                 />
-                                                <div
-                                                    onClick={() => togglePermissao(index, 'exclusao')}
-                                                    className={`w-10 h-5 rounded-full cursor-pointer transition-colors duration-300 
-            ${permissao.exclusao ? 'bg-red-500' : 'bg-blue-400'}`}
-                                                >
-                                                    <div
-                                                        className={`w-5 h-5 bg-gray-700 rounded-full shadow-md transform transition-transform duration-300 
-                ${permissao.exclusao ? 'translate-x-5' : 'translate-x-0'}`}
-                                                    ></div>
-                                                </div>
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <input
+                                                <Toggle
                                                     type="checkbox"
                                                     checked={permissao.edicao}
                                                     onChange={() => togglePermissao(index, 'edicao')}
-                                                    className="hidden"
+                                                    activeColor="bg-amber-400"
+                                                    inactiveColor="bg-blue-400"
                                                 />
-                                                <div
-                                                    onClick={() => togglePermissao(index, 'edicao')}
-                                                    className={`w-10 h-5 rounded-full cursor-pointer transition-colors duration-300 
-            ${permissao.edicao ? 'bg-red-500' : 'bg-blue-400'}`}
-                                                >
-                                                    <div
-                                                        className={`w-5 h-5 bg-gray-700 rounded-full shadow-md transform transition-transform duration-300 
-                ${permissao.edicao ? 'translate-x-5' : 'translate-x-0'}`}
-                                                    ></div>
-                                                </div>
                                             </td>
-
                                         </tr>
                                     ))}
                                 </tbody>
