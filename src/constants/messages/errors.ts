@@ -1,6 +1,9 @@
 export enum errors {
   REQUISICAO = "Opa! Não deu pra fazer isso agora. Tente de novo mais tarde!",
   DELECAO = "Opa! Não consegui apagar o usuário. Tente de novo!",
+  INVALIDAR_LOGIN = "Opa! Não consegui localizar esse login e senha, confere por favor?",
+  AUTENTICAR_LOGIN = "Opa! Ocorreu um probleminha. Tente de novo!",
+  REDEFINIR_SENHA = 'Opa! Não consegui redefinir a senha. Tente outra vez!',
   BUSCAR_USUARIOS= 'Opa! Não consegui carregar as informações do usuário. Tente de novo!',
   SALVAR_USUARIO = "Opa! Tive um probleminha ao salvar o novo usuário.",
   ATUALIZAR_USUARIO = "Opa! Não deu pra editar esse usuário agora.",
@@ -9,5 +12,4 @@ export enum errors {
   ATUALIZAR_PARAMETROS = "Opa! Não deu pra atualizar as informações do usuário. Tente outra vez!",
   BUSCAR_CEP = 'Erro ao buscar o CEP',
   CARREGAR_CEP = 'CEP não encontrado',
-
 }
