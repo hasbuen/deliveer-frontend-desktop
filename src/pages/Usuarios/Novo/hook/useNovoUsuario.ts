@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
 import { useNovoParametro } from './useNovoParametro';
+import { errors } from '../../../../constants/messages/errors';
 
 interface Usuario {
   id: string;
@@ -164,7 +165,7 @@ export const useNovoUsuario = () => {
 
         todasPermissoesSalvas
           ? toast.success(`Usuário ${usuarioArmazenado.novoUsuario.login} cadastrado com sucesso!`)
-          : toast.error(`Algo de errado ocorreu ao salvar este novo usuário!!`);
+          : toast.error(errors.SALVAR_USUARIO);
           navigate('/usuarios');
       }
       return true;
@@ -178,7 +179,7 @@ export const useNovoUsuario = () => {
 
         navigate('/');
       } else {
-        toast.error(err.response?.errors?.[0]?.message || 'Erro ao salvar usuário!');
+        toast.error(err.response?.errors?.[0]?.message || errors.SALVAR_USUARIO);
       }
       return false;
     } finally {

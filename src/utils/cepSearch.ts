@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { errors } from '../constants/messages/errors';
 
 export const cepSearch = async (cep: string) => {
   if (!cep || cep.length !== 8) {
@@ -10,7 +11,7 @@ export const cepSearch = async (cep: string) => {
     const data = response.data;
 
     if (data.erro) {
-      throw new Error('CEP não encontrado');
+      throw new Error(errors.CARREGAR_CEP);
     }
 
     return {
@@ -22,6 +23,6 @@ export const cepSearch = async (cep: string) => {
       ibge: data.ibge
     };
   } catch (error) {
-    throw new Error('Erro ao buscar o CEP');
+    throw new Error(errors.BUSCAR_CEP);
   }
 };

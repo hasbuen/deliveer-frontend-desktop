@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
 import { useEditaParametro } from './useEditaParametros';
+import { errors } from '../../../../constants/messages/errors';
 interface BuscaUsuarioResposta {
   buscaUsuario: { id: string };
 }
@@ -181,7 +182,7 @@ export const useEditaUsuario = () => {
       
       return true;
     } catch (err: any) {
-      toast.error(err.response?.errors?.[0]?.message || 'Erro ao editar usuário!');
+      toast.error(err.response?.errors?.[0]?.message || errors.ATUALIZAR_USUARIO);
       return false;
     } finally {
       setLoading(false);

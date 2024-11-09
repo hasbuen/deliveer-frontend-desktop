@@ -3,6 +3,7 @@ import { gql } from 'graphql-request';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
+import { errors } from '../../../../constants/messages/errors';
 
 interface Usuario {
   login: string;
@@ -76,7 +77,7 @@ export const useTodosUsuarios = () => {
       
         navigate('/');
       } else {
-        toast.error(err.response?.errors?.[0]?.message || 'Erro ao buscar usuários');
+        toast.error(err.response?.errors?.[0]?.message || errors.BUSCAR_USUARIOS);
       }
 
       return [];

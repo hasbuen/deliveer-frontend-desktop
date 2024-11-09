@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTodosUsuarios } from "./hook/useTodosUsuarios";
-import { InformationCircleIcon, MapPinIcon } from '@heroicons/react/24/outline'; // Ícone de informação
-import { Tooltip } from 'react-tooltip'; // Um exemplo de componente de tooltip
+import { InformationCircleIcon, MapPinIcon } from '@heroicons/react/24/outline'; 
+import { Tooltip } from 'react-tooltip'; 
+import { errors } from '../../../constants/messages/errors';
 
 const TodosUsuarios: React.FC = () => {
     const navigate = useNavigate();
     const { todosUsuarios, loading } = useTodosUsuarios();
     const [usuarios, setUsuarios] = useState<any[]>([]);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [infoCadastrarUsuarios, setinfoCadastrarUsuarios] = useState<string | null>(null);
 
     useEffect(() => {
         todosUsuarios().then((usuarios: any[]) => {
             if (usuarios.length === 0) {
-                setErrorMessage("Por que não começar a cadastrar novos usuários agora mesmo?");
+                setinfoCadastrarUsuarios("Por que não começar a cadastrar novos usuários agora mesmo?");
             } else {
                 const mapeiaUsuarios = usuarios.map((usuario: any) => ({
                     login: usuario.login,
@@ -30,11 +31,10 @@ const TodosUsuarios: React.FC = () => {
                     ibge: usuario.ibge
                 }));
                 setUsuarios(mapeiaUsuarios);
-                setErrorMessage(null);
+                setinfoCadastrarUsuarios(null);
             }
-        }).catch(error => {
-            console.error("Erro ao carregar os usuários", error);
-            setErrorMessage("Erro ao carregar os usuários.");
+        }).catch(() => {
+            setinfoCadastrarUsuarios(errors.BUSCAR_USUARIOS);
         });
 
     }, [navigate]);
@@ -50,8 +50,8 @@ const TodosUsuarios: React.FC = () => {
                 </div>
                 {loading ? (
                     <p className="text-lg leading-8 text-gray-600">Carregando...</p>
-                ) : errorMessage ? (
-                    <p className="text-lg leading-8 text-gray-400">{errorMessage}</p>
+                ) : infoCadastrarUsuarios ? (
+                    <p className="text-lg leading-8 text-gray-400">{infoCadastrarUsuarios}</p>
                 ) : (
                     <ul role="list" className="grid gap-x-8 gap-y-12 sm:grid-cols-2 sm:gap-y-16 xl:col-span-2">
                         {usuarios.map((usuario) => (
