@@ -1,42 +1,15 @@
-// src/pages/Usuarios/hook/useNovoUsuario.tsx
 import { useState } from 'react';
-import { gql } from 'graphql-request';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
 import { useNovoParametro } from './useNovoParametro';
 import { errors } from '../../../../constants/messages/errors';
+import { Usuario } from '../../../../types/usuario.interface';
 import { NOVO_USUARIO } from '../../../../graphql/mutations/usuario.mutation';
-
-interface Usuario {
-  id: string;
-  login: string;
-  status: number;
-  nome: string;
-  email: string;
-  superiorId: string;
-  senha: string;
-  aniversario: Date;
-  telefone: string;
-  isSuperior: boolean;
-  cep: string | null;
-  logradouro: string | null;
-  numero: string | null;
-  bairro: string | null;
-  localidade: string | null;
-  uf: string | null;
-  ibge: string | null;
-  token: string | null;
-  avatar: string | null;
-  parametroId: string | null;
-  filialId: string | null;
-}
 
 interface NovoUsuarioResposta {
   novoUsuario: Usuario;
 }
-
-
 
 export const useNovoUsuario = () => {
   const [loading, setLoading] = useState<boolean>(false);
