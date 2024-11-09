@@ -5,7 +5,7 @@ import { cepSearch } from '../../utils/cepSearch';
 import { toast } from 'react-toastify';
 import TabelaPermissoes from '../../components/Tables/TabelaPermissoes';
 import { Permissao } from '../../types/permissoes.interface';
-import { mensagens } from '../../constants/messages.enum';
+import { errors } from '../../constants/messages/errors';
 
 interface Field {
     label: string;
@@ -79,14 +79,14 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                     if (parametros) {
                         setPermissoes(parametros);
                     } else {
-                        toast.error(mensagens.erro_carregar_parametro);
+                        toast.error(errors.CARREGAR_PARAMETROS);
                     }
                 } else {
-                    toast.error(mensagens.erro_carregar_parametro);
+                    toast.error(errors.CARREGAR_PARAMETROS);
                 }
 
             } catch (error) {
-                toast.error(mensagens.erro_carregar_parametro);
+                toast.error(errors.CARREGAR_PARAMETROS);
             }
         }
     };

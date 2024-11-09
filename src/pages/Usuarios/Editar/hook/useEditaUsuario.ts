@@ -5,70 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
 import { useEditaParametro } from './useEditaParametros';
 import { errors } from '../../../../constants/messages/errors';
+import { EDITA_USUARIO } from '../../../../graphql/mutations/usuario.mutation';
 interface BuscaUsuarioResposta {
   buscaUsuario: { id: string };
 }
-
-const EDITA_USUARIO = gql`
-  mutation editaUsuario(
-    $id: String!,
-    $nome: String,
-    $email: String,
-    $superiorId: String,
-    $senha: String,
-    $aniversario: String,
-    $telefone: String,
-    $isSuperior: Boolean,
-    $cep: String,
-    $logradouro: String,
-    $numero: String,
-    $bairro: String,
-    $localidade: String,
-    $uf: String,
-    $ibge: String,
-    $token: String,
-    $avatar: String,
-    $filialId: String
-  ) {
-    editaUsuario(
-      id: $id,
-      nome: $nome,
-      email: $email,
-      superiorId: $superiorId,
-      senha: $senha,
-      aniversario: $aniversario,
-      telefone: $telefone,
-      isSuperior: $isSuperior,
-      cep: $cep,
-      logradouro: $logradouro,
-      numero: $numero,
-      bairro: $bairro,
-      localidade: $localidade,
-      uf: $uf,
-      ibge: $ibge,
-      token: $token,
-      avatar: $avatar,
-      filialId: $filialId
-    ) {
-      nome
-      email
-      superiorId
-      aniversario
-      telefone
-      isSuperior
-      cep
-      logradouro
-      numero
-      bairro
-      localidade
-      uf
-      ibge
-      token
-      avatar
-      filialId
-    }
-  }
-`;
 
 interface FormData {
   login: string;

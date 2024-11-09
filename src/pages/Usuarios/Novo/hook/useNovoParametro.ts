@@ -1,37 +1,10 @@
 import { useState } from 'react';
-import { gql } from 'graphql-request';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
 import { errors } from '../../../../constants/messages/errors';
-
-const NOVO_PARAMETRO = gql`
-mutation novoParametro(
-    $usuarioId: String!,
-    $tela: String!,
-    $leitura: Boolean!,
-    $escrita: Boolean!,
-    $exclusao: Boolean!,
-    $edicao: Boolean!
-) {
-  novoParametro(
-    usuarioId: $usuarioId,
-    tela: $tela,
-    leitura: $leitura,
-    escrita: $escrita,
-    exclusao: $exclusao,
-    edicao: $edicao
-  ) {
-    usuarioId,
-    tela,
-    leitura,
-    escrita,
-    exclusao,
-    edicao
-  }
-}
-`;
+import { NOVO_PARAMETRO } from '../../../../graphql/mutations/usuario.mutation';
 
 export const useNovoParametro = () => {
     const [loading, setLoading] = useState<boolean>(false);

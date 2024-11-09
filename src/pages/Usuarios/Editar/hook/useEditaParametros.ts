@@ -1,63 +1,22 @@
 import { useState } from 'react';
-import { gql } from 'graphql-request';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
 import { errors } from '../../../../constants/messages/errors';
-
-type Parametro = {
-  usuarioId: string;
-  tela: string;
-  leitura: boolean;
-  escrita: boolean;
-  exclusao: boolean;
-  edicao: boolean;
-};
+import { Permissao } from '../../../../types/permissoes.interface';
+import { BUSCA_PARAMETROS_USUARIO, EDITA_PARAMETROS } from '../../../../graphql/mutations/usuario.mutation';
 
 interface BuscaParametrosResponse {
-  buscaParametrosPorUsuarioId: Parametro[];
+  buscaParametrosPorUsuarioId: Permissao[];
 }
-
-const BUSCA_PARAMETROS_USUARIO = gql`
-query BuscaParametrosPorUsuarioId($usuarioId: String!) {
-    buscaParametrosPorUsuarioId(usuarioId: $usuarioId) {
-        usuarioId
-        tela
-        leitura
-        escrita
-        exclusao
-        edicao
-    }
-}
-`;
-
-const EDITA_PARAMETROS = gql`
-mutation editaParametros(
-  $usuarioId: String!,
-  $parametros: [ParametroInput!]!
-) {
-  editaParametros(
-    usuarioId: $usuarioId,
-    parametros: $parametros
-  ) {
-    id
-    usuarioId
-    tela
-    leitura
-    escrita
-    exclusao
-    edicao
-  }
-}
-`;
 
 export const useEditaParametro = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
   const client = getGraphQLClient();
 
-  const carregaParametrosUsuario = async (usuarioId: string): Promise<Parametro[] | false> => {
+  const carregaParametrosUsuario = async (usuarioId: string): Promise<Permissao[] | false> => {
     setLoading(true);
     const variables = { usuarioId };
     

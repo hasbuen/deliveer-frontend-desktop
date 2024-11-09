@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { gql } from 'graphql-request';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import getGraphQLClient from '../../../../utils/graphqlClient';
 import { errors } from '../../../../constants/messages/errors';
+import { APAGA_PARAMETROS, APAGA_USUARIO } from '../../../../graphql/mutations/usuario.mutation';
 
 interface ApagaUsuarioResposta {
     apagaUsuario: boolean;
@@ -11,18 +11,6 @@ interface ApagaUsuarioResposta {
 interface ApagaParametrosResposta {
     apagaParametros: boolean;
 }
-
-const APAGA_USUARIO = gql`
-          mutation apagaUsuario($id: String!) {
-            apagaUsuario(id: $id)
-          }
-        `;
-
-const APAGA_PARAMETROS = gql`
-          mutation apagaParametros($usuarioId: String!) {
-            apagaParametros(usuarioId: $usuarioId)
-          }
-        `;
 
 export const useApagaUsuario = () => {
     const [loading, setLoading] = useState<boolean>(false);

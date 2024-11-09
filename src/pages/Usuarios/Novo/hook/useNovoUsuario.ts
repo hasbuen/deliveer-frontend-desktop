@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
 import { useNovoParametro } from './useNovoParametro';
 import { errors } from '../../../../constants/messages/errors';
+import { NOVO_USUARIO } from '../../../../graphql/mutations/usuario.mutation';
 
 interface Usuario {
   id: string;
@@ -35,65 +36,7 @@ interface NovoUsuarioResposta {
   novoUsuario: Usuario;
 }
 
-const NOVO_USUARIO = gql`
-  mutation novoUsuario(
-    $login: String!,
-    $status: Int!,
-    $nome: String!,
-    $email: String!,
-    $superiorId: String!,
-    $senha: String!,
-    $aniversario: String!,
-    $telefone: String!,
-    $isSuperior: Boolean!,
-    $cep: String,
-    $logradouro: String,
-    $numero: String,
-    $bairro: String,
-    $localidade: String,
-    $uf: String,
-    $ibge: String,
-    $token: String,
-    $avatar: String,
-    $filialId: String
-  ) {
-    novoUsuario(
-      login: $login,
-      status: $status,
-      nome: $nome,
-      email: $email,
-      superiorId: $superiorId,
-      senha: $senha,
-      aniversario: $aniversario,
-      telefone: $telefone,
-      isSuperior: $isSuperior,
-      cep: $cep,
-      logradouro: $logradouro,
-      numero: $numero,
-      bairro: $bairro,
-      localidade: $localidade,
-      uf: $uf,
-      ibge: $ibge,
-      token: $token,
-      avatar: $avatar,
-      filialId: $filialId
-    ) {
-      id
-      login
-      status
-      nome
-      email
-      superiorId
-      senha
-      aniversario
-      telefone
-      isSuperior
-      token
-      avatar
-      filialId
-    }
-  }
-`;
+
 
 export const useNovoUsuario = () => {
   const [loading, setLoading] = useState<boolean>(false);
