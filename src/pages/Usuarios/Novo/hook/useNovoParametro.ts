@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
+import { errors } from '../../../../constants/messages/errors';
 
 const NOVO_PARAMETRO = gql`
 mutation novoParametro(
@@ -61,7 +62,7 @@ export const useNovoParametro = () => {
                 toast.warning("Sessão expirada, faça o login novamente!");
                 navigate('/');
             } else {
-                toast.error(err.response?.errors?.[0]?.message || 'Erro ao salvar parâmetros do usuário!');
+                toast.error(err.response?.errors?.[0]?.message || errors.ATUALIZAR_PARAMETROS);
             }
             return false;
         } finally {

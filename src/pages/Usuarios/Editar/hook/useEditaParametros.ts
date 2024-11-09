@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 import getGraphQLClient from '../../../../utils/graphqlClient';
+import { errors } from '../../../../constants/messages/errors';
 
 type Parametro = {
   usuarioId: string;
@@ -66,7 +67,7 @@ export const useEditaParametro = () => {
       return response.buscaParametrosPorUsuarioId;
 
     } catch (err: any) {
-      toast.error(err.response?.errors?.[0]?.message || 'Erro ao buscar parâmetros do usuário!');
+      toast.error(err.response?.errors?.[0]?.message || errors.BUSCAR_PARAMETROS);
       
       return false;
     } finally {
@@ -104,7 +105,7 @@ export const useEditaParametro = () => {
           toast.warning("Sessão expirada, faça o login novamente!");
           navigate('/');
         } else {
-          toast.error(err.response?.errors?.[0]?.message || 'Erro ao atualizar parâmetros do usuário!');
+          toast.error(err.response?.errors?.[0]?.message || errors.ATUALIZAR_PARAMETROS);
         }
         return false;
       } finally {

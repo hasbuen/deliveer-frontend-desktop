@@ -3,7 +3,9 @@ import { AdjustmentsHorizontalIcon, MagnifyingGlassIcon } from '@heroicons/react
 import { useEditaParametro } from './Editar/hook/useEditaParametros';
 import { cepSearch } from '../../utils/cepSearch';
 import { toast } from 'react-toastify';
-import Toggle from '../../commons/UI/Toggle';
+import TabelaPermissoes from '../../components/Tables/TabelaPermissoes';
+import { Permissao } from '../../types/permissoes.interface';
+import { mensagens } from '../../constants/messages.enum';
 
 interface Field {
     label: string;
@@ -11,15 +13,6 @@ interface Field {
     value?: string;
     valueBool?: boolean;
     type: string;
-}
-
-interface Permissao {
-    usuarioId: string;
-    tela: string;
-    leitura: boolean;
-    escrita: boolean;
-    exclusao: boolean;
-    edicao: boolean;
 }
 
 interface FormularioProps {
@@ -86,14 +79,14 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                     if (parametros) {
                         setPermissoes(parametros);
                     } else {
-                        toast.error("Erro ao carregar parâmetros do usuário!");
+                        toast.error(mensagens.erro_carregar_parametro);
                     }
                 } else {
-                    toast.error("Erro ao carregar parâmetros do usuário!");
+                    toast.error(mensagens.erro_carregar_parametro);
                 }
 
             } catch (error) {
-                toast.error("Erro ao carregar parâmetros do usuário!");
+                toast.error(mensagens.erro_carregar_parametro);
             }
         }
     };
@@ -304,60 +297,7 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                         />
                         <h3 className="text-xl font-bold mb-4">Permissões</h3>
                         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                            <table className="w-full text-sm text-left rtl:text-right text-rose-500 dark:text-rose-400">
-                                <thead className="text-xs uppercase bg-transparent text-black font-bold">
-                                    <tr>
-                                        <th scope="col" className="px-6 py-3">Tela</th>
-                                        <th scope="col" className="px-6 py-3">Ver</th>
-                                        <th scope="col" className="px-6 py-3">Criar</th>
-                                        <th scope="col" className="px-6 py-3">Apagar</th>
-                                        <th scope="col" className="px-6 py-3">Editar</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {permissoes.map((permissao, index) => (
-                                        <tr key={permissao.tela}>
-                                            <td className="px-6 py-4 text-black font-bold">{permissao.tela}</td>
-                                            <td className="px-6 py-4 text-center">
-                                                <Toggle
-                                                    type="checkbox"
-                                                    checked={permissao.leitura}
-                                                    onChange={() => togglePermissao(index, 'leitura')}
-                                                    activeColor="bg-amber-400"
-                                                    inactiveColor="bg-blue-400"
-                                                />
-                                            </td>
-                                            <td className="px-6 py-4 text-center">
-                                                <Toggle
-                                                    type="checkbox"
-                                                    checked={permissao.escrita}
-                                                    onChange={() => togglePermissao(index, 'escrita')}
-                                                    activeColor="bg-amber-400"
-                                                    inactiveColor="bg-blue-400"
-                                                />
-                                            </td>
-                                            <td className="px-6 py-4 text-center">
-                                                <Toggle
-                                                    type="checkbox"
-                                                    checked={permissao.exclusao}
-                                                    onChange={() => togglePermissao(index, 'exclusao')}
-                                                    activeColor="bg-amber-400"
-                                                    inactiveColor="bg-blue-400"
-                                                />
-                                            </td>
-                                            <td className="px-6 py-4 text-center">
-                                                <Toggle
-                                                    type="checkbox"
-                                                    checked={permissao.edicao}
-                                                    onChange={() => togglePermissao(index, 'edicao')}
-                                                    activeColor="bg-amber-400"
-                                                    inactiveColor="bg-blue-400"
-                                                />
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            <TabelaPermissoes permissoes={permissoes} togglePermissao={togglePermissao} />
                         </div>
                     </div>
                 </div>
