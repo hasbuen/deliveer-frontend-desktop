@@ -4,6 +4,7 @@ import { useTodosUsuarios } from "../Todos/hook/useTodosUsuarios";
 import { TrashIcon } from '@heroicons/react/24/outline';
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { toast } from 'react-toastify';
+import { errors } from '../../../constants/messages/errors';
 
 interface Usuario {
     id: string;
@@ -70,7 +71,7 @@ const ApagaUsuario: React.FC = () => {
             setUsuarios(prev => prev.filter(usuario => !ids.includes(usuario.id)));
             setUsuariosSelecionados([]);
         } catch (error) {
-            toast.error("Erro ao apagar usuários!");
+            toast.error(errors.APAGAR_USUARIO);
         }
     };
 

@@ -6,37 +6,14 @@ import { CheckIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { toast } from 'react-toastify';
 
 import Formulario from '../Formulario';
-
-interface Usuario {
-    id: string;
-    login: string;
-    nome: string;
-    email: string;
-    telefone: string;
-    isSuperior: boolean;
-    cep: string;
-    logradouro: string;
-    numero: string;
-    localidade: string;
-    uf: string;
-    ibge: string;
-    avatar: string;
-    filialId?: string;
-    parametros?: Array<{
-        usuarioId: string;
-        tela: string;
-        leitura: boolean;
-        escrita: boolean;
-        exclusao: boolean;
-        edicao: boolean
-    }>;
-}
+import { errors } from '../../../constants/messages/errors';
+import { UsuarioComParametros } from '../../../types/usuarioComParametros.interface';
 
 const EditaUsuario: React.FC = () => {
     const { editaUsuario } = useEditaUsuario();
     const { todosUsuarios } = useTodosUsuarios();
-    const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-    const [usuarioSelecionado, setUsuarioSelecionado] = useState<Usuario | null>(null);
+    const [usuarios, setUsuarios] = useState<UsuarioComParametros[]>([]);
+    const [usuarioSelecionado, setUsuarioSelecionado] = useState<UsuarioComParametros | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
@@ -61,13 +38,13 @@ const EditaUsuario: React.FC = () => {
                 }));
                 setUsuarios(mapeiaUsuarios);
             } catch (error) {
-                toast.error("Erro ao carregar usuários!");
+                toast.error(errors.CARREGAR_USUARIOS);
             }
         };
         carregarUsuarios();
     }, []);
 
-    const abrirAtualizaModal = (usuario: Usuario) => {
+    const abrirAtualizaModal = (usuario: UsuarioComParametros) => {
         setUsuarioSelecionado(usuario);
         setIsModalOpen(true);
     };
@@ -77,7 +54,7 @@ const EditaUsuario: React.FC = () => {
         setUsuarioSelecionado(null);
     };
 
-    const atualizaUsuario = async (formData: Usuario) => {
+    const atualizaUsuario = async (formData: UsuarioComParametros) => {
         try {
             await editaUsuario(formData);
             fecharAtualizaModal();
@@ -137,8 +114,6 @@ const EditaUsuario: React.FC = () => {
                         </tbody>
                     </table>
                 </div>
-
-
 
             {isModalOpen && usuarioSelecionado && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
