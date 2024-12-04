@@ -1,6 +1,6 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
-import { UserGroupIcon, XMarkIcon, BellIcon, HomeIcon } from '@heroicons/react/24/outline';
+import { UserGroupIcon, BuildingStorefrontIcon, XMarkIcon, BellIcon, HomeIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 
 interface NavbarProps {
@@ -11,6 +11,7 @@ interface NavbarProps {
 
 const solutions = [
     { name: 'Usuários ⭐', description: 'Controle os usuários, removendo-os quando necessário e dando as permissões necessárias como quiser!', href: '/usuarios', icon: UserGroupIcon },
+    { name: 'Lojas 🏪', description: 'Cadastre novas lojas ou atualize as informações delas para sempre que precisar deixá-las sempre +perfeitas!', href: '/lojas', icon: BuildingStorefrontIcon }
 ];
 
 const Navbar: React.FC<NavbarProps> = ({ avatar, login, logout }) => {
@@ -44,7 +45,7 @@ const Navbar: React.FC<NavbarProps> = ({ avatar, login, logout }) => {
 
                 <Popover className="relative">
                     <PopoverButton
-                        onClick={() => window.location.href = '/dashboard'} // Redireciona para o dashboard
+                        onClick={() => window.location.href = '/dashboard'} 
                         className="inline-flex items-center gap-x-1 p-4 text-sm font-semibold leading-6 text-gray-900"
                     >
                         <HomeIcon className="h-5 w-5" aria-hidden="true" />

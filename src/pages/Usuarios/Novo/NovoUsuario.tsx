@@ -1,3 +1,4 @@
+import { windows } from '../../../constants/windows/windows';
 import Formulario from '../Formulario';
 import { useNovoUsuario } from "./hook/useNovoUsuario";
 
@@ -36,7 +37,7 @@ const NovoUsuario: React.FC = () => {
         <div className="max-w-2xl rounded-md shadow-sm mx-auto">
 
             <Formulario
-                name={"Novo usuário"}
+                name={windows.NOVO_USUARIO}
                 fields={fields}
                 onSubmit={registraUsuario}
             />

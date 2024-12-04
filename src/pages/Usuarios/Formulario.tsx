@@ -6,6 +6,8 @@ import { toast } from 'react-toastify';
 import TabelaPermissoes from '../../components/Tables/TabelaPermissoes';
 import { Permissao } from '../../types/permissoes.interface';
 import { errors } from '../../constants/messages/errors';
+import { windows } from '../../constants/windows/windows';
+import PhoneInput from '../../commons/UI/PhoneInput';
 
 interface Field {
     label: string;
@@ -57,6 +59,10 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
             ...prevState,
             [name]: isCheckbox ? checked : value
         }));
+    };
+
+    const handleTelefoneChange = (newTelefone: string) => {
+        setFormData({ ...formData, telefone: newTelefone });
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -115,7 +121,7 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
     };
 
     const handleCepKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             const cep = formData['cep'];
             if (cep) {
@@ -184,7 +190,7 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
             ))}
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {name === 'Novo usuário' && fields.slice(1).map((field) => (
+                {name === windows.NOVO_USUARIO && fields.slice(1).map((field) => (
                     <div key={field.name} className={`flex flex-col ${field.name === 'avatar' ? 'sm:col-span-3' : 'sm:col-span-1'}`}>
                         {field.type !== 'checkbox' && (
                             <label htmlFor={field.name} className="text-sm font-medium text-rose-600">
@@ -218,6 +224,23 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                                     placeholder="Digite o CEP"
                                 />
                             </div>
+                        ) : field.name === 'login' ? (
+                            <input
+                                type="text"
+                                name="login"
+                                value={formData.login || ''}
+                                style={{ textTransform: 'uppercase' }}
+                                onChange={handleChange}
+                                className="mt-1 block w-full rounded-lg p-2 border-0 bg-rose-200 text-black shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-rose-600"
+                            />
+                        ) : field.name === 'telefone' ? (
+                            <PhoneInput
+                                type="tel"
+                                name="telefone"
+                                value={formData.telefone}
+                                onChange={handleTelefoneChange}
+                            />
+
                         ) : field.type !== 'checkbox' && (
                             <input
                                 type={field.type}
@@ -231,7 +254,7 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                 ))
                 }
 
-                {name === 'Atualização' && fields.slice(1).map((field) => (
+                {name === windows.EDITA_USUARIO && fields.slice(1).map((field) => (
                     <div key={field.name} className={`flex flex-col ${field.name === 'avatar' ? 'sm:col-span-3' : 'sm:col-span-1'}`}>
                         {field.type !== 'checkbox' && (
                             <label htmlFor={field.name} className="text-sm font-medium text-rose-600">
@@ -265,6 +288,14 @@ const Formulario: React.FC<FormularioProps> = ({ name, fields, onSubmit, initial
                                     placeholder="Digite o CEP"
                                 />
                             </div>
+                        ) : field.name === 'telefone' ? (
+                            <PhoneInput
+                                type="tel"
+                                name="telefone"
+                                value={formData.telefone}
+                                onChange={handleTelefoneChange}
+                            />
+
                         ) : field.type !== 'checkbox' && (
                             <input
                                 type={field.type}

@@ -13,4 +13,5 @@ export enum errors {
   ATUALIZAR_PARAMETROS = "Opa! Não deu pra atualizar as informações do usuário. Tente outra vez!",
   BUSCAR_CEP = 'Erro ao buscar o CEP',
   CARREGAR_CEP = 'CEP não encontrado',
+  INVALIDAR_TELEFONE = "Por favor, digite o número de telefone assim: (XX) XXXXX-XXXX.",
 }

@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Usuarios from "./pages/Usuarios/Usuarios";
+import Lojas from "./pages/Lojas/Lojas";
 import "./assets/styles/input.css";
 import { ToastContainer } from "react-toastify";
 
@@ -24,6 +25,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         <Route path="/" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/usuarios/*" element={<Usuarios />} />
+        <Route path="/lojas/*" element={<Lojas />} />
       </Routes>
     </Router>
   </React.StrictMode>,

@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import Formulario from '../Formulario';
 import { errors } from '../../../constants/messages/errors';
 import { UsuarioComParametros } from '../../../types/usuarioComParametros.interface';
+import { windows } from '../../../constants/windows/windows';
 
 const EditaUsuario: React.FC = () => {
     const { editaUsuario } = useEditaUsuario();
@@ -124,7 +125,7 @@ const EditaUsuario: React.FC = () => {
                             title="Fechar sem salvar!"
                         />
                         <Formulario
-                            name={`Atualização`}
+                            name={windows.EDITA_USUARIO}
                             fields={[
                                 { label: 'Superior', name: 'isSuperior', valueBool: usuarioSelecionado.isSuperior, type: 'checkbox' },
                                 { label: 'Nome', name: 'nome', value: usuarioSelecionado.nome, type: 'text' },

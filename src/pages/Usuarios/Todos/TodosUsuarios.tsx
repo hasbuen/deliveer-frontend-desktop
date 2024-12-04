@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTodosUsuarios } from "./hook/useTodosUsuarios";
-import { InformationCircleIcon, MapPinIcon } from '@heroicons/react/24/outline'; 
+import { InformationCircleIcon, MapPinIcon, EnvelopeIcon } from '@heroicons/react/24/outline'; 
 import { Tooltip } from 'react-tooltip'; 
 import { errors } from '../../../constants/messages/errors';
 
@@ -45,7 +45,7 @@ const TodosUsuarios: React.FC = () => {
                 <div className="max-w-2xl">
                     <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Lista de Usuários</h2>
                     <p className="mt-6 text-lg leading-8 text-gray-600">
-                        Aqui estão os usuários registrados.
+                        Aqui estão seus usuários registrados.
                     </p>
                 </div>
                 {loading ? (
@@ -84,6 +84,16 @@ const TodosUsuarios: React.FC = () => {
                                                 </span>
                                             ) : (
                                                 "Não foi informado o endereço no cadastro deste usuário!"
+                                            )}
+                                        </p>
+                                        <p className='text-lg'>
+                                            {usuario.email ? (
+                                                <span className="flex items-center">
+                                                    <EnvelopeIcon className='h-5 w-5 text-blue-700 font-bold mr-1' />
+                                                    {`${usuario.email}`}
+                                                </span>
+                                            ) : (
+                                                "Não foi informado o telefone no cadastro deste usuário!"
                                             )}
                                         </p>
                                     </Tooltip>
