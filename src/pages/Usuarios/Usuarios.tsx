@@ -1,16 +1,18 @@
 // src/pages/Usuarios/Usuarios.tsx
 import React, { useEffect, useState } from 'react';
+import { useUsuarios } from '../hook/useUsuarios';
 import { useNavigate, Routes, Route } from 'react-router-dom';
 import Navbar from '../../components/Navbar/Navbar';
 import SidebarMenu from '../../components/SidebarMenu/SidebarMenu';
 import { UserGroupIcon, NewspaperIcon, UserPlusIcon, PencilSquareIcon, UserMinusIcon, EyeIcon } from '@heroicons/react/24/outline';
 import TodosUsuarios from './Todos/TodosUsuarios'; 
-import NovoUsuario from './Novo/NovoUsuario'; // Importando NovoUsuario
-import EditaUsuario from './Editar/EditaUsuario'; // Importando EditaUsuario
-import ApagaUsuario from './Apagar/ApagaUsuario'; // Importando ApagaUsuario
-import MonitorarUsuario from './Monitorar/MonitorarUsuario'; // Importando MonitorarUsuario
+import NovoUsuario from './Novo/NovoUsuario'; 
+import EditaUsuario from './Editar/EditaUsuario'
+import ApagaUsuario from './Apagar/ApagaUsuario'; 
+import MonitorarUsuario from './Monitorar/MonitorarUsuario'; 
 
 const Usuarios: React.FC = () => {
+    const { carregaParametrosUsuario } = useUsuarios();
     const [avatar, setAvatar] = useState<string>("");
     const [login, setLogin] = useState<string>("");
     const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
@@ -26,6 +28,18 @@ const Usuarios: React.FC = () => {
         } else {
             setAvatar(storedAvatar || "");
             setLogin(storedLogin);
+
+            const fetchPermissoes = async () => {
+                const resultado = await carregaParametrosUsuario(storedLogin);
+                if (resultado) {
+                    console.log(JSON.stringify(resultado))
+                } else {
+                    // navigate('/'); 
+                }
+            };
+    
+            fetchPermissoes();
+
         }
     }, [navigate]);
 

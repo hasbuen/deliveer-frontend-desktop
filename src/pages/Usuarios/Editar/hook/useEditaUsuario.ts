@@ -6,6 +6,7 @@ import getGraphQLClient from '../../../../utils/graphqlClient';
 import { useEditaParametro } from './useEditaParametros';
 import { errors } from '../../../../constants/messages/errors';
 import { EDITA_USUARIO } from '../../../../graphql/mutations/usuario.mutation';
+
 interface BuscaUsuarioResposta {
   buscaUsuario: { id: string };
 }

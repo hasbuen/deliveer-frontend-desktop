@@ -10,6 +10,7 @@ function Dashboard() {
   useEffect(() => {
     const storedAvatar = localStorage.getItem('avatar') || "default.png";
     const storedLogin = localStorage.getItem('login');
+    
     if (!storedLogin) {
       navigate('/');
     } else {
